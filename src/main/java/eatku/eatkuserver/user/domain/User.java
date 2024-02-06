@@ -20,10 +20,7 @@ public class User extends BaseTimeEntity {
     @Column(updatable = false, nullable = false)
     private Long Id;
 
-    @Convert(converter = UserTypeAttributeConverter.class)
-    private UserType userType;
-
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -36,6 +33,9 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false, length = 10)
     private String nickName;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Authority> roles = new ArrayList<>();
 
     @Column(nullable = true)
     private String profileImageUrl;

@@ -1,18 +1,18 @@
 package eatku.eatkuserver.user.domain;
 
-public enum UserType {
+public enum UserRole {
     ADMIN("ADMIN", "관리자"), USER("USER", "일반");
 
-    private String type;
+    private String role;
     private String value;
 
-    UserType(String type, String value) {
-        this.type = type;
+    UserRole(String role, String value) {
+        this.role = role;
         this.value = value;
     }
 
-    public String getType() {
-        return type;
+    public String getRole() {
+        return role;
     }
 
     public String getValue() {
