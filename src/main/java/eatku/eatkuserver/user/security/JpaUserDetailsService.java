@@ -1,6 +1,6 @@
 package eatku.eatkuserver.user.security;
 
-import eatku.eatkuserver.user.UserRepository;
+import eatku.eatkuserver.user.repository.UserRepository;
 import eatku.eatkuserver.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

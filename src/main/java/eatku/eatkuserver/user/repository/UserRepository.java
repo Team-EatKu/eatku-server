@@ -1,4 +1,4 @@
-package eatku.eatkuserver.user;
+package eatku.eatkuserver.user.repository;
 
 import eatku.eatkuserver.user.domain.User;
 import jakarta.transaction.Transactional;
