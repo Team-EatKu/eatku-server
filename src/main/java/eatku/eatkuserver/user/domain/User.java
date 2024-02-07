@@ -24,11 +24,6 @@ public class User extends BaseTimeEntity {
     private String email;
 
     @Column(nullable = false)
-    @ColumnTransformer(
-            read = "FUNCTION_DECRYPT(PASSWORD)",     // 칼럼 값을 가져올 때
-            write = "FUNCTION_ENCRYPT(?)"                 // 칼럼 값을 쓸 때
-    )
-
     private String password;
 
     @Column(nullable = false, length = 10)
