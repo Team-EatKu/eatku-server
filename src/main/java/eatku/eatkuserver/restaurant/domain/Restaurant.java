@@ -38,11 +38,9 @@ public class Restaurant extends BaseTimeEntity{
     @Column(nullable = false)
     private Long longitude;
 
-    @Column(columnDefinition = "DATETIME")
-    private Date startTime;
+    private String startTime;
 
-    @Column(columnDefinition = "DATETIME")
-    private Date endTime;
+    private String endTime;
 
     private String profileImageUrl;
 
