@@ -3,6 +3,7 @@ package eatku.eatkuserver.user.domain;
 import eatku.eatkuserver.like.domain.Like;
 import eatku.eatkuserver.review.domain.Review;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnTransformer;
@@ -26,7 +27,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, length = 10)
+    @Column(length = 10)
     private String nickName;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
