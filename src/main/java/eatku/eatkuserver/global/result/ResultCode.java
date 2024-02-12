@@ -1,4 +1,4 @@
-package eatku.global.result;
+package eatku.eatkuserver.global.result;
 
 public enum ResultCode {
 }
