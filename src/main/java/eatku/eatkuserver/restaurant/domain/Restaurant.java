@@ -3,6 +3,8 @@ package eatku.eatkuserver.restaurant.domain;
 import eatku.eatkuserver.like.domain.Like;
 import eatku.eatkuserver.review.domain.Review;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,8 +13,10 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Restaurant extends BaseTimeEntity{
 
     @Id

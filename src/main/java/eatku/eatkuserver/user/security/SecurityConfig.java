@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/user/mailSend", "/user/login", "/user/mailAuth", "/user/register").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/restaurant/register", "/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
