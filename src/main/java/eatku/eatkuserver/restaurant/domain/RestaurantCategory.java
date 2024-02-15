@@ -1,11 +1,12 @@
 package eatku.eatkuserver.restaurant.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
+@Data
 @NoArgsConstructor
 public class RestaurantCategory {
 

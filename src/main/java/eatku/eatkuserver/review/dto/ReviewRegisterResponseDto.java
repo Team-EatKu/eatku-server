@@ -1,10 +1,10 @@
-package eatku.eatkuserver.user.dto;
+package eatku.eatkuserver.review.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class RegisterResponseDto {
+public class ReviewRegisterResponseDto {
     private String statusMessage;
 }

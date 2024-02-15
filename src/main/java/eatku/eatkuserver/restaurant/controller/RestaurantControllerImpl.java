@@ -1,17 +1,17 @@
 package eatku.eatkuserver.restaurant.controller;
 
 import com.amazonaws.services.s3.AmazonS3;
+import eatku.eatkuserver.global.result.ResultCode;
+import eatku.eatkuserver.global.result.ResultResponse;
 import eatku.eatkuserver.restaurant.dto.RestaurantRegisterRequestDto;
 import eatku.eatkuserver.restaurant.dto.RestaurantRegisterResponseDto;
+import eatku.eatkuserver.restaurant.dto.RestaurantSearchRequestDto;
 import eatku.eatkuserver.restaurant.service.RestaurantService;
 import eatku.eatkuserver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,24 +20,28 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/restaurant")
 public class RestaurantControllerImpl implements RestaurantController{
-    private final S3Service s3Service;
-    private final RestaurantService restaurantService;
-    @Override
-    public void restaurantInformation() {
 
+    private final RestaurantService restaurantService;
+
+
+    @Override
+    @GetMapping("/{restaurantId}")
+    public ResponseEntity<ResultResponse> restaurantInformation(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_INFORMATION_SUCCESS, restaurantService.getRestaurantInformation(restaurantId)));
     }
 
     @Override
-    public void searchRestaurants() {
-
+    @GetMapping("/search")
+    public ResponseEntity<ResultResponse> searchRestaurants(@RequestBody RestaurantSearchRequestDto request) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_SEARCH_SUCCESS, restaurantService.searchRestaurants(request)));
     }
 
     @Override
     @PostMapping("/register")
-    public ResponseEntity<RestaurantRegisterResponseDto> registerRestaurant(
+    public ResponseEntity<ResultResponse> registerRestaurant(
             @RequestPart(value = "restaurant_data") RestaurantRegisterRequestDto request,
-            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
+            @RequestPart(value = "image", required = false) MultipartFile profileImage) {
 
-        return new ResponseEntity<>(restaurantService.addRestaurant(request, images), HttpStatus.OK);
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_REGISTER_SUCCESS, restaurantService.addRestaurant(request, profileImage)));
     }
 }

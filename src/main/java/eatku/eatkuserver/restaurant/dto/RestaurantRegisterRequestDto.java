@@ -14,6 +14,8 @@ public class RestaurantRegisterRequestDto {
     private String location;
     private Long latitude;
     private Long longitude;
+    private String information;
+    private String startTime;
     private String endTime;
     private List<Menu> menuList;
     private List<Category> categoryList;

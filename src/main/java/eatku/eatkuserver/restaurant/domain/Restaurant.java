@@ -30,6 +30,8 @@ public class Restaurant extends BaseTimeEntity{
     @Column(nullable = false)
     private String location;
 
+    private String information;
+
     @Column(name = "restaurant_image_urls")
     @ElementCollection
     private List<String> imageUrls = new ArrayList<>();

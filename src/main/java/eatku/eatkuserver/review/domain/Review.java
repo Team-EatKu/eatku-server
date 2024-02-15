@@ -27,10 +27,6 @@ public class Review extends BaseTimeEntity {
     @Column(nullable = false)
     private int scope;
 
-    @ManyToOne
-    @JoinColumn(name = "MENU_ID")
-    private Menu menu;
-
     @Column(name = "review_image_url")
     @ElementCollection
     private List<String> ImageUrls = new ArrayList<>();

@@ -1,4 +1,4 @@
-package eatku.eatkuserver.user.dto;
+package eatku.eatkuserver.user.dto.emailauth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

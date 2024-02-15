@@ -46,8 +46,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/user/mailSend", "/user/login", "/user/mailAuth", "/user/register").permitAll()
-                        .requestMatchers("/restaurant/register", "/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/mailSend", "/user/login", "/user/mailAuth", "/user/register","/restaurant/register").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

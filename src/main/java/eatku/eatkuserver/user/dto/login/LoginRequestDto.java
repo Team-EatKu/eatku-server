@@ -1,4 +1,4 @@
-package eatku.eatkuserver.user.dto;
+package eatku.eatkuserver.user.dto.login;
 
 import lombok.Builder;
 import lombok.Data;
