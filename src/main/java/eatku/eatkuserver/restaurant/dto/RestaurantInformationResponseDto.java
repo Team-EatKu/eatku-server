@@ -1,5 +1,6 @@
 package eatku.eatkuserver.restaurant.dto;
 
+import eatku.eatkuserver.review.domain.Review;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,8 +17,8 @@ public class RestaurantInformationResponseDto {
     private String information;
     private String startTime;
     private String endTime;
-    private List<Menu>
+    private List<MenuSimple> menuSimpleList;
     private List<String> hashtagList;
     private List<String> categoryList;
-    private List<>
+    private List<Review> reviewList;
 }

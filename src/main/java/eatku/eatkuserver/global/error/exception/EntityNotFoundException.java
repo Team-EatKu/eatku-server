@@ -1,6 +1,7 @@
 package eatku.eatkuserver.global.error.exception;
 
-import antmanclub.cut4userver.global.error.ErrorCode;
+
+import eatku.eatkuserver.global.error.ErrorCode;
 
 public class EntityNotFoundException extends BusinessException{
     public EntityNotFoundException(ErrorCode errorCode, String message) {

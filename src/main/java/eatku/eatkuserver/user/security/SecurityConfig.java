@@ -46,7 +46,11 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/user/mailSend", "/user/login", "/user/mailAuth", "/user/register","/restaurant/register").permitAll()
+                        .requestMatchers("/user/mailSend", "/user/login", "/user/mailAuth", "/user/register","/restaurant/register",  "/v2/api-docs",
+                                "/swagger-ui/**",
+                                "/api-docs/json/swagger-config",
+                                "/v3/**",
+                                "/api-docs/json").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

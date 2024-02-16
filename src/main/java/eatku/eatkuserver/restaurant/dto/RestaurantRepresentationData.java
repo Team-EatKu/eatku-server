@@ -13,4 +13,5 @@ public class RestaurantRepresentationData {
     private String profileImage;
     private String name;
     private List<String> hashtagList;
+    private double averageScope;
 }
