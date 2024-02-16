@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
 @Builder
 public class RestaurantRecommendResponseDto {
     private List<List<RestaurantRepresentationData>> restaurantData;
