@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class MenuSimple {
     private String name;
-    private Long price;
+//    private Long price;
 }
