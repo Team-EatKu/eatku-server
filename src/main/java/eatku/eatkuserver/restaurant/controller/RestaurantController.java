@@ -2,13 +2,9 @@ package eatku.eatkuserver.restaurant.controller;
 
 import eatku.eatkuserver.global.result.ResultResponse;
 import eatku.eatkuserver.restaurant.dto.RestaurantRegisterRequestDto;
-import eatku.eatkuserver.restaurant.dto.RestaurantRegisterResponseDto;
 import eatku.eatkuserver.restaurant.dto.RestaurantSearchRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.xml.transform.Result;
-import java.util.List;
 
 public interface RestaurantController {
     public ResponseEntity<ResultResponse> restaurantInformation(Long restaurantId);

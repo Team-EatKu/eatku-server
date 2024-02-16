@@ -1,14 +1,14 @@
 package eatku.eatkuserver.user.service;
 
+import eatku.eatkuserver.global.error.ErrorCode;
+import eatku.eatkuserver.global.error.exception.EntityNotFoundException;
 import eatku.eatkuserver.user.domain.Authority;
 import eatku.eatkuserver.user.domain.User;
 import eatku.eatkuserver.user.domain.UserRole;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthResponseDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailSendRequestDto;
-import eatku.eatkuserver.user.dto.emailauth.EmailSendResponseDto;
 import eatku.eatkuserver.user.dto.join.RegisterRequestDto;
-import eatku.eatkuserver.user.dto.join.RegisterResponseDto;
 import eatku.eatkuserver.user.dto.login.LoginRequestDto;
 import eatku.eatkuserver.user.dto.login.LoginResponseDto;
 import eatku.eatkuserver.user.repository.UserRepository;
@@ -18,7 +18,6 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +39,11 @@ public class UserServiceImpl implements UserService{
     public LoginResponseDto login(LoginRequestDto request) {
 
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new BadCredentialsException("잘못된 계정정보입니다.")
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 메일이 존재하지 않습니다.")
         );
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
-            throw new BadCredentialsException("잘못된 계정정보입니다.");
+            throw new EntityNotFoundException(ErrorCode.NOT_EQUAL_PASSWORD, "비밀번호가 틀렸습니다.");
         }
 
         return LoginResponseDto.builder()
@@ -55,13 +54,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public EmailSendResponseDto mailSend(EmailSendRequestDto request) {
+    public String mailSend(EmailSendRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
         if(user != null){
-            return EmailSendResponseDto.builder()
-                    .statusMessage("이미 가입한 회원입니다.")
-                    .build();
+            throw new EntityNotFoundException(ErrorCode.ALREADY_EXIST_EMAIL, "이미 존재하는 이메일입니다.");
         }
 
         int authNumber = makeRandomNumber();
@@ -76,9 +73,7 @@ public class UserServiceImpl implements UserService{
                         "인증번호를 제대로 입력해주세요"; //이메일 내용 삽입
         joinEmail(setFrom, toMail, title, content, authNumber);
 
-        return EmailSendResponseDto.builder()
-                .statusMessage("전송되었습니다.")
-                .build();
+        return null;
     }
 
     @Override
@@ -92,19 +87,15 @@ public class UserServiceImpl implements UserService{
             redisUtil.setData(Integer.toString(newAuthNumber), email);
 
             return EmailAuthResponseDto.builder()
-                    .statustMessage("인증 성공")
                     .authNumber(Integer.toString(newAuthNumber))
                     .build();
         }else{
-            return EmailAuthResponseDto.builder()
-                    .statustMessage("인증 실패")
-                    .authNumber(null)
-                    .build();
+            throw new EntityNotFoundException(ErrorCode.MAIL_AUTH_FAILED, "인증번호가 일치하지 않습니다.");
         }
     }
 
     @Override   // 비밀번호 유효성 검사 해야함
-    public RegisterResponseDto join(RegisterRequestDto request) {
+    public String join(RegisterRequestDto request) {
         if(redisUtil.getData(request.getAuthNumber()).equals(request.getEmail())){
             User newUser = new User();
             newUser.setEmail(request.getEmail());
@@ -121,13 +112,9 @@ public class UserServiceImpl implements UserService{
 
             redisUtil.deleteData(request.getAuthNumber());
 
-            return RegisterResponseDto.builder()
-                    .statusMessage("가입 성공")
-                    .build();
+            return newUser.getEmail();
         }else{
-            return RegisterResponseDto.builder()
-                    .statusMessage("인증번호가 잘못되었습니다.")
-                    .build();
+            throw new EntityNotFoundException(ErrorCode.MAIL_AUTH_FAILED, "인증번호가 일치하지 않습니다.");
         }
     }
 

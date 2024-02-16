@@ -1,20 +1,14 @@
 package eatku.eatkuserver.restaurant.controller;
 
-import com.amazonaws.services.s3.AmazonS3;
 import eatku.eatkuserver.global.result.ResultCode;
 import eatku.eatkuserver.global.result.ResultResponse;
 import eatku.eatkuserver.restaurant.dto.RestaurantRegisterRequestDto;
-import eatku.eatkuserver.restaurant.dto.RestaurantRegisterResponseDto;
 import eatku.eatkuserver.restaurant.dto.RestaurantSearchRequestDto;
 import eatku.eatkuserver.restaurant.service.RestaurantService;
-import eatku.eatkuserver.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

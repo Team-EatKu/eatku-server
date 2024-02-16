@@ -1,14 +1,15 @@
 package eatku.eatkuserver.restaurant.service;
 
+import eatku.eatkuserver.global.error.ErrorCode;
+import eatku.eatkuserver.global.error.exception.EntityNotFoundException;
 import eatku.eatkuserver.restaurant.domain.*;
-import eatku.eatkuserver.restaurant.dto.RestaurantRegisterRequestDto;
-import eatku.eatkuserver.restaurant.dto.RestaurantRegisterResponseDto;
-import eatku.eatkuserver.restaurant.dto.RestaurantSearchRequestDto;
-import eatku.eatkuserver.restaurant.dto.RestaurantSearchResponseDto;
+import eatku.eatkuserver.restaurant.dto.*;
 import eatku.eatkuserver.restaurant.repository.CategoryRepository;
 import eatku.eatkuserver.restaurant.repository.HashTagRepository;
 import eatku.eatkuserver.restaurant.repository.RestaurantRepository;
+import eatku.eatkuserver.review.domain.Review;
 import eatku.eatkuserver.s3.service.S3Service;
+import eatku.eatkuserver.user.dto.UserSimple;
 import eatku.eatkuserver.user.security.JwtProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class RestaurantServiceImpl implements RestaurantService{
 
     @Override
     @Transactional
-    public RestaurantRegisterResponseDto addRestaurant(RestaurantRegisterRequestDto request, MultipartFile profileImage) {
+    public String addRestaurant(RestaurantRegisterRequestDto request, MultipartFile profileImage) {
         Restaurant restaurant = new Restaurant();
 
         restaurant.setName(request.getName());
@@ -77,15 +78,13 @@ public class RestaurantServiceImpl implements RestaurantService{
         try{
             profileImageUrl = s3Service.saveFile(profileImage);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(ErrorCode.IMAGE_UPLOAD_FAILED, "이미지 업로드에 실패하였습니다.");
         }
         restaurant.setProfileImageUrl(profileImageUrl);
 
         rr.save(restaurant);
 
-        return RestaurantRegisterResponseDto.builder()
-                .statusMessage("저장 성공")
-                .build();
+        return "저장성공";
     }
 
     @Override
@@ -94,7 +93,67 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
-    public RestaurantSearchResponseDto getRestaurantInformation(Long restaurantId) {
-        return null;
+    public RestaurantInformationResponseDto getRestaurantInformation(Long restaurantId) {
+        Restaurant restaurant = rr.findRestaurantById(restaurantId).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.RESTAURANT_NOT_FOUND, restaurantId + " : 해당 id의 식당이 존재하지 않습니다.")
+        );
+
+        // 식당 별점 계산
+        double averageScope = 0;
+
+        if(!restaurant.getReiviewList().isEmpty()){
+            int totalScope = 0;
+            for(Review review : restaurant.getReiviewList()){
+                totalScope += review.getScope();
+            }
+            averageScope = (double) totalScope / restaurant.getReiviewList().size();
+        }
+
+        return RestaurantInformationResponseDto.builder()
+                .restaurantId(restaurantId)
+                .name(restaurant.getName())
+                .location(restaurant.getLocation())
+                .likeCount((long) restaurant.getLikeList().size())
+                .averageScope(averageScope)
+                .latitude(restaurant.getLatitude())
+                .longitude(restaurant.getLongitude())
+                .information(restaurant.getInformation())
+                .startTime(restaurant.getStartTime())
+                .endTime(restaurant.getEndTime())
+                .menuSimpleList(restaurant.getMenuList().stream()
+                        .map(menu -> {
+                            return MenuSimple.builder()
+                                    .name(menu.getName())
+                                    .price(menu.getPrice())
+                                    .build();
+                        })
+                        .collect(Collectors.toList()))
+                .categoryList(restaurant.getCategoryList().stream()
+                        .map(restaurantCategory -> {
+                            String categoryName = restaurantCategory.getCategory().getCategoryName();
+                            return categoryName;
+                        })
+                        .collect(Collectors.toList()))
+                .hashtagList(restaurant.getHashtagList().stream()
+                        .map(restaurantHashtag -> {
+                            String hashtag = restaurantHashtag.getHashtag().getName();
+                            return hashtag;
+                        })
+                        .collect(Collectors.toList()))
+                .reviewList(restaurant.getReiviewList().stream()
+                        .map(review -> {
+                            return ReviewSimple.builder()
+                                    .id(review.getId())
+                                    .scope(review.getScope())
+                                    .content(review.getContent())
+                                    .imageUrls(review.getImageUrls())
+                                    .user(UserSimple.builder()
+                                            .nickName(review.getUser().getNickName())
+                                            .profileImage(review.getUser().getProfileImageUrl())
+                                            .build())
+                                    .build();
+                        })
+                        .collect(Collectors.toList()))
+                .build();
     }
 }

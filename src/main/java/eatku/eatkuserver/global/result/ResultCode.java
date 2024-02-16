@@ -10,11 +10,8 @@ public enum ResultCode {
     USER_LOGIN_SUCCESS(200, "U001", "로그인에 성공했습니다"),
     USER_JOIN_SUCCESS(200, "U002", "회원가입에 성공했습니다."),
     USER_EMAIL_VALIDATE(200, "U003", "중복되지 않는 유효한 이메일입니다."),
-    USER_PROFILE_EDIT_SUCCESS(200, "U004", "유저 프로필 수정을 완료했습니다."),
-    USER_FOLLOW_SUCCESS(200, "U005", "유저 팔로우에 성공했습니다."),
-    USER_FOLLOW_DELETE_SUCCESS(200, "U006", "유저 팔로우 취소를 성공했습니다."),
-    USER_FOLLOWING_LIST_GET_SUCCESS(200, "U007", "유저의 팔로잉 목록을 불러왔습니다."),
-    USER_FOLLOWER_LIST_GET_SUCCESS(200, "U008", "유저의 팔로워 목록을 불러왔습니다.."),
+    EMAIL_SEND_SUCCESS(200, "U004", "이메일 발송에 성공하였습니다."),
+    EMAIL_AUTH_SUCCESS(200, "U005", "이메일 인증에 성공하였습니다."),
     USER_SEARCH_LIST_GET_SUCCESS(200, "U008", "이름에 해당 문자열이 포함되는 유저 리스트를 불러왔습니다."),
     USER_SEARCH_GET_SUCCESS(200, "U008", "이름에 해당하는 유저의 정보를 불러왔습니다."),
 
