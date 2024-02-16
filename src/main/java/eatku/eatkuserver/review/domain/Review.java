@@ -29,7 +29,7 @@ public class Review extends BaseTimeEntity {
 
     @Column(name = "review_image_url")
     @ElementCollection
-    private List<String> ImageUrls = new ArrayList<>();
+    private List<String> imageUrls = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")

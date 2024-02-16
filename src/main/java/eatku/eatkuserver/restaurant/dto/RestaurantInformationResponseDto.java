@@ -12,6 +12,8 @@ public class RestaurantInformationResponseDto {
     private Long restaurantId;
     private String name;
     private String location;
+    private Long likeCount;
+    private double averageScope;
     private Long latitude;
     private Long longitude;
     private String information;
@@ -20,5 +22,5 @@ public class RestaurantInformationResponseDto {
     private List<MenuSimple> menuSimpleList;
     private List<String> hashtagList;
     private List<String> categoryList;
-    private List<Review> reviewList;
+    private List<ReviewSimple> reviewList;
 }
