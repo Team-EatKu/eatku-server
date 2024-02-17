@@ -34,9 +34,7 @@ public class Restaurant extends BaseTimeEntity{
 
     private String information;
 
-    @Column(name = "restaurant_image_urls")
-    @ElementCollection
-    private List<String> imageUrls = new ArrayList<>();
+    private String profileImageUrl;
 
     private double averageScope;
 
@@ -50,7 +48,7 @@ public class Restaurant extends BaseTimeEntity{
 
     private String endTime;
 
-    private String profileImageUrl;
+
 
     @OneToMany(mappedBy = "restaurant", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Menu> menuList = new ArrayList<>();

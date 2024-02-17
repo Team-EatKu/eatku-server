@@ -22,6 +22,7 @@ public enum ErrorCode
     // Restaurant
     RESTAURANT_NOT_FOUND(400, "R001", "존재하지 않는 식당입니다."),
     IMAGE_UPLOAD_FAILED(400, "R002", "식당 사진 업로드에 실패하였습니다."),
+    RESTAURANT_SEARCH_FAILED(400, "R003", "식당 검색에 실패하였습니다."),
 
     // Posts
     POSTS_NOT_FOUND(400, "P002", "게시물을 찾을 수 없습니다."),
@@ -35,7 +36,11 @@ public enum ErrorCode
 
     // Likes,
     CAN_NOT_LIKE_POSTS(400, "L001", "좋아요를 누를 수 없습니다."),
-    CAN_NOT_UNLIKE_POSTS(400, "L002", "좋아요를 취소할 수 없습니다.");
+    CAN_NOT_UNLIKE_POSTS(400, "L002", "좋아요를 취소할 수 없습니다."),
+
+    // 잘못된 API 요청
+    NOT_FOUNT_API(404, "X001", "잘못된 API 요청입니다."),
+    SERVER_ERROR(505, "S001", "서버 에러");
 
     private final int status;
     private final String code;

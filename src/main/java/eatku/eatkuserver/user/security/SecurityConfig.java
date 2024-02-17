@@ -58,6 +58,8 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) ->
+                        response.sendRedirect("/error"))
                 .accessDeniedHandler(this::accessDeniedHandler)
                 .authenticationEntryPoint(this::authenticationEntryPoint);
 
