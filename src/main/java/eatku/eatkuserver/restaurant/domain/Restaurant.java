@@ -28,7 +28,9 @@ public class Restaurant extends BaseTimeEntity{
     private String name;
 
     @Column(nullable = false)
-    private String location;
+    private String address;
+
+    private String phoneNumber;
 
     private String information;
 
@@ -39,10 +41,10 @@ public class Restaurant extends BaseTimeEntity{
     private double averageScope;
 
     @Column(nullable = false)
-    private Long latitude;
+    private double latitude;
 
     @Column(nullable = false)
-    private Long longitude;
+    private double longitude;
 
     private String startTime;
 

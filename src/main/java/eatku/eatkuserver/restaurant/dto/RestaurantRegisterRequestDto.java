@@ -13,9 +13,10 @@ import java.util.List;
 @Builder
 public class RestaurantRegisterRequestDto {
     private String name;
-    private String location;
-    private Long latitude;
-    private Long longitude;
+    private String address;
+    private String phoneNumber;
+    private double latitude;
+    private double longitude;
     private String information;
     private String startTime;
     private String endTime;

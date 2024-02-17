@@ -35,7 +35,8 @@ public class RestaurantServiceImpl implements RestaurantService{
         Restaurant restaurant = new Restaurant();
 
         restaurant.setName(request.getName());
-        restaurant.setLocation(request.getLocation());
+        restaurant.setAddress(request.getAddress());
+        restaurant.setPhoneNumber(request.getPhoneNumber());
         restaurant.setInformation(request.getInformation());
         restaurant.setStartTime(request.getStartTime());
         restaurant.setEndTime(request.getEndTime());
@@ -84,7 +85,7 @@ public class RestaurantServiceImpl implements RestaurantService{
 
         rr.save(restaurant);
 
-        return "저장성공";
+        return "저장 성공";
     }
 
     @Override
@@ -112,7 +113,8 @@ public class RestaurantServiceImpl implements RestaurantService{
         return RestaurantInformationResponseDto.builder()
                 .restaurantId(restaurantId)
                 .name(restaurant.getName())
-                .location(restaurant.getLocation())
+                .address(restaurant.getAddress())
+                .phoneNumber(restaurant.getPhoneNumber())
                 .likeCount((long) restaurant.getLikeList().size())
                 .averageScope(averageScope)
                 .latitude(restaurant.getLatitude())
