@@ -1,6 +1,6 @@
 package eatku.eatkuserver.restaurant.dto;
 
-import eatku.eatkuserver.user.dto.UserSimple;
+import eatku.eatkuserver.user.dto.UserDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class ReviewDto {
 
     private Long id;
-    private UserSimple user;
+    private UserDto user;
     private String content;
     private int scope;
     private List<String> imageUrls;

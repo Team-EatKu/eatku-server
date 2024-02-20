@@ -9,7 +9,7 @@ import eatku.eatkuserver.restaurant.repository.HashTagRepository;
 import eatku.eatkuserver.restaurant.repository.RestaurantRepository;
 import eatku.eatkuserver.review.domain.Review;
 import eatku.eatkuserver.s3.service.S3Service;
-import eatku.eatkuserver.user.dto.UserSimple;
+import eatku.eatkuserver.user.dto.UserDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,6 +90,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
+    @Transactional
     public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request) {
         List<String> hashtagQuery = request.getHashtagQuery();
         List<String> categoryQuery = request.getCategoryQuery();
@@ -163,7 +164,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                                     .scope(review.getScope())
                                     .content(review.getContent())
                                     .imageUrls(review.getImageUrls())
-                                    .user(UserSimple.builder()
+                                    .user(UserDto.builder()
                                             .nickName(review.getUser().getNickName())
                                             .profileImage(review.getUser().getProfileImageUrl())
                                             .build())

@@ -13,4 +13,7 @@ public interface UserController {
     public ResponseEntity<ResultResponse> requestedMailAuth(EmailAuthRequestDto request);
 
     public ResponseEntity<ResultResponse> register(RegisterRequestDto request);
+
+    public ResponseEntity<ResultResponse> emailCheck(String email);
+    public ResponseEntity<ResultResponse> nickNameCheck(String nickName);
 }

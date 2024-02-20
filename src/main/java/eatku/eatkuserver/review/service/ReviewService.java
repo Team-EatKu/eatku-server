@@ -8,5 +8,8 @@ import java.util.List;
 
 public interface ReviewService {
     public String addReview(ReviewRegisterRequestDto request, String token, List<MultipartFile> images);
-//    public String modifyReview(ReviewModifyRequestDto request, )
+
+    public String modifyReview(ReviewModifyRequestDto request, String token);
+
+    public String deleteReview(ReviewModifyRequestDto request, String token);
 }

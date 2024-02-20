@@ -60,6 +60,9 @@ public class JwtProvider {
 
     // 토큰에 담겨있는 유저 email 획득
     public String getAccount(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7); // "Bearer " 접두사 제거
+        }
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 

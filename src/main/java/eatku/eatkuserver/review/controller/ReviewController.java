@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ReviewController {
     public ResponseEntity<ResultResponse> registerReview(ReviewRegisterRequestDto request, String token, List<MultipartFile> images);
-    public ResponseEntity<ResultResponse> modifyReview(ReviewModifyRequestDto request);
-    public ResponseEntity<ResultResponse> deleteReview(ReviewModifyRequestDto request);
+    public ResponseEntity<ResultResponse> modifyReview(ReviewModifyRequestDto request, String token);
+    public ResponseEntity<ResultResponse> deleteReview(ReviewModifyRequestDto request, String token);
 
 }

@@ -1,6 +1,7 @@
 package eatku.eatkuserver.user.domain;
 
 import eatku.eatkuserver.like.domain.Like;
+import eatku.eatkuserver.restaurant.domain.LectureBuilding;
 import eatku.eatkuserver.review.domain.Review;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -30,7 +31,11 @@ public class User extends BaseTimeEntity {
     @Column(length = 10)
     private String nickName;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "LB_ID")
+    private LectureBuilding lectureBuilding;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Authority> roles = new ArrayList<>();
 
     @Column(nullable = true)
