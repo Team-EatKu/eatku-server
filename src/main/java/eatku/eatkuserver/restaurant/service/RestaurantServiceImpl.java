@@ -77,7 +77,7 @@ public class RestaurantServiceImpl implements RestaurantService{
         String profileImageUrl;
         if(!profileImage.isEmpty()){
             try{
-                profileImageUrl = s3Service.saveFile(profileImage);
+                profileImageUrl = s3Service.saveFile(profileImage, "restaurant_profile_image");
             } catch (IOException e) {
                 throw new EntityNotFoundException(ErrorCode.IMAGE_UPLOAD_FAILED, "이미지 업로드에 실패하였습니다.");
             }

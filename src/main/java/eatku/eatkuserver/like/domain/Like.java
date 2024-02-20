@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
+@Data
 @NoArgsConstructor
 @Table(name = "'like'")
 public class Like {

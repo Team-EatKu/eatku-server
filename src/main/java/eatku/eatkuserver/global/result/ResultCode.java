@@ -28,8 +28,7 @@ public enum ResultCode {
     REVIEW_DELETE_SUCCESS(200, "V003", "리뷰 삭제에 성공하였습니다."),
 
     // Like
-    LIKE_SAVE_SUCCESS(200, "L001", "좋아요 등록에 성공했습니다."),
-    LIKE_DELETE_SUCCESS(200, "L002", "좋아요 삭제에 성공했습니다."),
+    LIKE_SAVE_SUCCESS_OR_DELETE(200, "L001", "찜하기 작업에 성공하였습니다."),
     LIKE_USER_LIST_GET_SUCCESS(200, "L003", "좋아요 누른 유저 목록을 불러왔습니다.");
 
     private final int status;

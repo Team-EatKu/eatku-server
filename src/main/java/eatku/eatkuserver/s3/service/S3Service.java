@@ -18,7 +18,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String saveFile(MultipartFile multipartFile) throws IOException{
+    public String saveFile(MultipartFile multipartFile, String directory) throws IOException{
         String originalFilename = UUID.randomUUID().toString() + multipartFile.getOriginalFilename();
 
         ObjectMetadata metadata = new ObjectMetadata();

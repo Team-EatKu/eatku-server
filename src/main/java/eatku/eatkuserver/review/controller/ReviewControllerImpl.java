@@ -23,9 +23,9 @@ public class ReviewControllerImpl implements ReviewController{
     @Override
     @PostMapping()
     public ResponseEntity<ResultResponse> registerReview(@RequestPart ReviewRegisterRequestDto request, @RequestHeader("Authorization") String token, @RequestPart List<MultipartFile> images) {
-        System.out.println("request = " + request);
-        System.out.println("token = " + token);
-        System.out.println("images = " + images);
+//        System.out.println("request = " + request);
+//        System.out.println("token = " + token);
+//        System.out.println("images = " + images);
         return ResponseEntity.ok(ResultResponse.of(ResultCode.REVIEW_REGISTER_SUCCESS, reviewService.addReview(request, token, images)));
     }
 
