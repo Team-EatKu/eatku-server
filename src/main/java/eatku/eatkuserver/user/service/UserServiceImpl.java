@@ -2,6 +2,7 @@ package eatku.eatkuserver.user.service;
 
 import eatku.eatkuserver.global.error.ErrorCode;
 import eatku.eatkuserver.global.error.exception.EntityNotFoundException;
+import eatku.eatkuserver.restaurant.domain.LectureBuilding;
 import eatku.eatkuserver.restaurant.dto.RestaurantDto;
 import eatku.eatkuserver.review.domain.Review;
 import eatku.eatkuserver.review.dto.ReviewDto;
@@ -10,6 +11,7 @@ import eatku.eatkuserver.user.domain.User;
 import eatku.eatkuserver.user.domain.UserRole;
 import eatku.eatkuserver.user.dto.LikeListResponseDto;
 import eatku.eatkuserver.user.dto.ReviewListResponseDto;
+import eatku.eatkuserver.user.dto.UserModifyRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthResponseDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailSendRequestDto;
@@ -104,9 +106,13 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    @Override   // 비밀번호 유효성 검사 해야함
+    @Override   // 비밀번호 유효성 검사, 닉네임 중복체크 추가해야함
     @Transactional
     public String join(RegisterRequestDto request) {
+        if(request.getEmail() == null || request.getPassword() == null ||
+                request.getNickName() == null || request.getLectureBuilding() == null){
+            throw new EntityNotFoundException(ErrorCode.USER_REGISTER_FAILED, "값이 부족합니다.");
+        }
         if(redisUtil.getData(request.getAuthNumber()).equals(request.getEmail())){
             User newUser = new User();
             newUser.setEmail(request.getEmail());
@@ -116,6 +122,10 @@ public class UserServiceImpl implements UserService{
             auth.setUserRole(UserRole.USER);
             authorityList.add(auth);
             newUser.setRoles(authorityList);
+
+            newUser.setNickName(request.getNickName());
+
+//            newUser.setLectureBuilding();
 
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 
@@ -127,6 +137,12 @@ public class UserServiceImpl implements UserService{
         }else{
             throw new EntityNotFoundException(ErrorCode.MAIL_AUTH_FAILED, "인증번호가 일치하지 않습니다.");
         }
+    }
+
+    @Override
+    public String modify(UserModifyRequestDto request, String token) {
+
+        return null;
     }
 
     @Override

@@ -14,6 +14,7 @@ public enum ErrorCode
     ALREADY_EXIST_EMAIL(400, "U004", "이미 있는 이메일입니다."),
     NOT_EQUAL_PASSWORD(400, "U005", "비밀번호가 일치하지 않습니다."),
     MAIL_AUTH_FAILED(400, "U006", "메일 인증에 실패하였습니다."),
+    USER_REGISTER_FAILED(400, "U007", "회원가입에 실패하였습니다."),
 
     // Authority
     AUTHENTICATION_FAILED(400, "A001", "인증되지 않은 사용자입니다."),
