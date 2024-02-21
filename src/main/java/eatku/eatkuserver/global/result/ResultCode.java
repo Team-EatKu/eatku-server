@@ -16,6 +16,8 @@ public enum ResultCode {
     USER_SEARCH_GET_SUCCESS(200, "U008", "이름에 해당하는 유저의 정보를 불러왔습니다."),
     EMAIL_CHECK_SUCCESS(200, "U009", "사용 가능한 이메일입니다."),
     NICKNAME_CHECK_SUCCESS(200, "U010", "사용 가능한 닉네임입니다."),
+    USER_LIKELIST_SUCCESS(200, "U011", "사용자의 찜하기 목록을 불러오는데 성공하였습니다."),
+    USER_REVIEWLIST_SUCCESS(200, "U012", "사용자의 리뷰 목록을 불러오는데 성공하였습니다."),
 
     // Restaurant
     RESTAURANT_REGISTER_SUCCESS(200, "R001", "식당 정보 등록에 성공하였습니다."),
@@ -28,7 +30,7 @@ public enum ResultCode {
     REVIEW_DELETE_SUCCESS(200, "V003", "리뷰 삭제에 성공하였습니다."),
 
     // Like
-    LIKE_SAVE_SUCCESS_OR_DELETE(200, "L001", "찜하기 작업에 성공하였습니다."),
+    LIKE_SAVE_OR_DELETE_SUCCESS(200, "L001", "찜하기 작업에 성공하였습니다."),
     LIKE_USER_LIST_GET_SUCCESS(200, "L003", "좋아요 누른 유저 목록을 불러왔습니다.");
 
     private final int status;

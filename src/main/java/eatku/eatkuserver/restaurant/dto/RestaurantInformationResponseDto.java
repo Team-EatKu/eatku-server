@@ -1,5 +1,6 @@
 package eatku.eatkuserver.restaurant.dto;
 
+import eatku.eatkuserver.review.dto.ReviewDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;

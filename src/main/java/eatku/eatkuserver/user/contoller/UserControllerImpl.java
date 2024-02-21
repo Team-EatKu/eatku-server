@@ -46,6 +46,18 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
+    @GetMapping("/likes")
+    public ResponseEntity<ResultResponse> getLikeList(String token) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_LIKELIST_SUCCESS, userService.getUsersLikeList(token)));
+    }
+
+    @Override
+    @GetMapping("/reviews")
+    public ResponseEntity<ResultResponse> getReviewList(String token) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_REVIEWLIST_SUCCESS, userService.getUsersReviewList(token)));
+    }
+
+    @Override
     @GetMapping("/mail")
     public ResponseEntity<ResultResponse> emailCheck(String email) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.EMAIL_CHECK_SUCCESS, userService.emailDuplicateCheck(email)));

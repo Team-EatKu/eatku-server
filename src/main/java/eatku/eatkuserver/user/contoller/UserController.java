@@ -1,6 +1,8 @@
 package eatku.eatkuserver.user.contoller;
 
 import eatku.eatkuserver.global.result.ResultResponse;
+import eatku.eatkuserver.user.dto.LikeListResponseDto;
+import eatku.eatkuserver.user.dto.ReviewListResponseDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailSendRequestDto;
 import eatku.eatkuserver.user.dto.join.RegisterRequestDto;
@@ -13,6 +15,10 @@ public interface UserController {
     public ResponseEntity<ResultResponse> requestedMailAuth(EmailAuthRequestDto request);
 
     public ResponseEntity<ResultResponse> register(RegisterRequestDto request);
+
+    public ResponseEntity<ResultResponse> getLikeList(String token);
+
+    public ResponseEntity<ResultResponse> getReviewList(String token);
 
     public ResponseEntity<ResultResponse> emailCheck(String email);
     public ResponseEntity<ResultResponse> nickNameCheck(String nickName);

@@ -2,9 +2,14 @@ package eatku.eatkuserver.user.service;
 
 import eatku.eatkuserver.global.error.ErrorCode;
 import eatku.eatkuserver.global.error.exception.EntityNotFoundException;
+import eatku.eatkuserver.restaurant.dto.RestaurantDto;
+import eatku.eatkuserver.review.domain.Review;
+import eatku.eatkuserver.review.dto.ReviewDto;
 import eatku.eatkuserver.user.domain.Authority;
 import eatku.eatkuserver.user.domain.User;
 import eatku.eatkuserver.user.domain.UserRole;
+import eatku.eatkuserver.user.dto.LikeListResponseDto;
+import eatku.eatkuserver.user.dto.ReviewListResponseDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthResponseDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailSendRequestDto;
@@ -25,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +82,7 @@ public class UserServiceImpl implements UserService{
                         "인증번호를 제대로 입력해주세요"; //이메일 내용 삽입
         joinEmail(setFrom, toMail, title, content, authNumber);
 
-        return null;
+        return "메일이 전송되었습니다.";
     }
 
     @Override
@@ -121,6 +127,36 @@ public class UserServiceImpl implements UserService{
         }else{
             throw new EntityNotFoundException(ErrorCode.MAIL_AUTH_FAILED, "인증번호가 일치하지 않습니다.");
         }
+    }
+
+    @Override
+    @Transactional
+    public LikeListResponseDto getUsersLikeList(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
+
+        return LikeListResponseDto.builder()
+                .restaurantList(user.getLikeList().stream()
+                        .map(like -> {
+                            return RestaurantDto.from(like.getRestaurant());
+                        })
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public ReviewListResponseDto getUsersReviewList(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
+
+        return ReviewListResponseDto.builder()
+                .reviewList(user.getReviewList().stream()
+                        .map(ReviewDto::from)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     @Override

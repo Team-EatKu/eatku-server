@@ -17,6 +17,6 @@ public class LikeControllerImpl implements LikeController{
     @Override
     @PostMapping("/{restaurantId}")
     public ResponseEntity<ResultResponse> likeOrDislikeRestaurant(@PathVariable Long restaurantId, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.LIKE_SAVE_SUCCESS_OR_DELETE, likeService.likeOrDislikeRestaurant(restaurantId, token)));
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.LIKE_SAVE_OR_DELETE_SUCCESS, likeService.likeOrDislikeRestaurant(restaurantId, token)));
     }
 }

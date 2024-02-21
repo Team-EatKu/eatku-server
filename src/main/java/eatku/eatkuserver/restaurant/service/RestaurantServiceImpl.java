@@ -8,6 +8,7 @@ import eatku.eatkuserver.restaurant.repository.CategoryRepository;
 import eatku.eatkuserver.restaurant.repository.HashTagRepository;
 import eatku.eatkuserver.restaurant.repository.RestaurantRepository;
 import eatku.eatkuserver.review.domain.Review;
+import eatku.eatkuserver.review.dto.ReviewDto;
 import eatku.eatkuserver.s3.service.S3Service;
 import eatku.eatkuserver.user.dto.UserDto;
 import jakarta.transaction.Transactional;
