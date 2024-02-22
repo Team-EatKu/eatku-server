@@ -9,8 +9,7 @@ import eatku.eatkuserver.restaurant.repository.HashTagRepository;
 import eatku.eatkuserver.restaurant.repository.RestaurantRepository;
 import eatku.eatkuserver.review.domain.Review;
 import eatku.eatkuserver.s3.service.S3Service;
-import eatku.eatkuserver.user.dto.UserSimple;
-import eatku.eatkuserver.user.security.JwtProvider;
+import eatku.eatkuserver.user.dto.UserDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,8 @@ public class RestaurantServiceImpl implements RestaurantService{
         Restaurant restaurant = new Restaurant();
 
         restaurant.setName(request.getName());
-        restaurant.setLocation(request.getLocation());
+        restaurant.setAddress(request.getAddress());
+        restaurant.setPhoneNumber(request.getPhoneNumber());
         restaurant.setInformation(request.getInformation());
         restaurant.setStartTime(request.getStartTime());
         restaurant.setEndTime(request.getEndTime());
@@ -75,21 +75,37 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .collect(Collectors.toList()));
 
         String profileImageUrl;
-        try{
-            profileImageUrl = s3Service.saveFile(profileImage);
-        } catch (IOException e) {
-            throw new EntityNotFoundException(ErrorCode.IMAGE_UPLOAD_FAILED, "이미지 업로드에 실패하였습니다.");
+        if(!profileImage.isEmpty()){
+            try{
+                profileImageUrl = s3Service.saveFile(profileImage);
+            } catch (IOException e) {
+                throw new EntityNotFoundException(ErrorCode.IMAGE_UPLOAD_FAILED, "이미지 업로드에 실패하였습니다.");
+            }
+            restaurant.setProfileImageUrl(profileImageUrl);
         }
-        restaurant.setProfileImageUrl(profileImageUrl);
 
         rr.save(restaurant);
 
-        return "저장성공";
+        return "저장 성공";
     }
 
     @Override
+    @Transactional
     public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request) {
-        return null;
+        List<String> hashtagQuery = request.getHashtagQuery();
+        List<String> categoryQuery = request.getCategoryQuery();
+
+        List<Restaurant> searchRestaurantList = rr.findByCategoriesAndHashtags(categoryQuery, hashtagQuery).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.RESTAURANT_SEARCH_FAILED, "식당 검색 과정에 문제가 생겼습니다.")
+        );
+
+        List<RestaurantDto> restaurantDtoList = searchRestaurantList.stream()
+                .map(RestaurantDto::from)
+                .collect(Collectors.toList());
+
+        return RestaurantSearchResponseDto.builder()
+                .restaurantData(restaurantDtoList)
+                .build();
     }
 
     @Override
@@ -112,7 +128,8 @@ public class RestaurantServiceImpl implements RestaurantService{
         return RestaurantInformationResponseDto.builder()
                 .restaurantId(restaurantId)
                 .name(restaurant.getName())
-                .location(restaurant.getLocation())
+                .address(restaurant.getAddress())
+                .phoneNumber(restaurant.getPhoneNumber())
                 .likeCount((long) restaurant.getLikeList().size())
                 .averageScope(averageScope)
                 .latitude(restaurant.getLatitude())
@@ -120,9 +137,9 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .information(restaurant.getInformation())
                 .startTime(restaurant.getStartTime())
                 .endTime(restaurant.getEndTime())
-                .menuSimpleList(restaurant.getMenuList().stream()
+                .menuDtoList(restaurant.getMenuList().stream()
                         .map(menu -> {
-                            return MenuSimple.builder()
+                            return MenuDto.builder()
                                     .name(menu.getName())
                                     .price(menu.getPrice())
                                     .build();
@@ -142,12 +159,12 @@ public class RestaurantServiceImpl implements RestaurantService{
                         .collect(Collectors.toList()))
                 .reviewList(restaurant.getReiviewList().stream()
                         .map(review -> {
-                            return ReviewSimple.builder()
+                            return ReviewDto.builder()
                                     .id(review.getId())
                                     .scope(review.getScope())
                                     .content(review.getContent())
                                     .imageUrls(review.getImageUrls())
-                                    .user(UserSimple.builder()
+                                    .user(UserDto.builder()
                                             .nickName(review.getUser().getNickName())
                                             .profileImage(review.getUser().getProfileImageUrl())
                                             .build())

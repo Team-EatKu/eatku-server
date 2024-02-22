@@ -12,4 +12,8 @@ public interface UserService {
     public String mailSend(EmailSendRequestDto request);
     public EmailAuthResponseDto mailAuth(EmailAuthRequestDto request);
     public String join(RegisterRequestDto request);
+
+    public String emailDuplicateCheck(String email);
+
+    public String nickNameDuplicateCheck(String nickName);
 }

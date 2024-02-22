@@ -1,26 +1,28 @@
 package eatku.eatkuserver.restaurant.dto;
 
-import eatku.eatkuserver.review.domain.Review;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
-@Data
 @Builder
+@Data
+@Schema
 public class RestaurantInformationResponseDto {
     private Long restaurantId;
     private String name;
-    private String location;
+    private String address;
+    private String phoneNumber;
     private Long likeCount;
     private double averageScope;
-    private Long latitude;
-    private Long longitude;
+    private double latitude;
+    private double longitude;
     private String information;
     private String startTime;
     private String endTime;
-    private List<MenuSimple> menuSimpleList;
+    private List<MenuDto> menuDtoList;
     private List<String> hashtagList;
     private List<String> categoryList;
-    private List<ReviewSimple> reviewList;
+    private List<ReviewDto> reviewList;
 }

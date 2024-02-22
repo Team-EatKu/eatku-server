@@ -28,27 +28,27 @@ public class Restaurant extends BaseTimeEntity{
     private String name;
 
     @Column(nullable = false)
-    private String location;
+    private String address;
+
+    private String phoneNumber;
 
     private String information;
 
-    @Column(name = "restaurant_image_urls")
-    @ElementCollection
-    private List<String> imageUrls = new ArrayList<>();
+    private String profileImageUrl;
 
     private double averageScope;
 
     @Column(nullable = false)
-    private Long latitude;
+    private double latitude;
 
     @Column(nullable = false)
-    private Long longitude;
+    private double longitude;
 
     private String startTime;
 
     private String endTime;
 
-    private String profileImageUrl;
+
 
     @OneToMany(mappedBy = "restaurant", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Menu> menuList = new ArrayList<>();

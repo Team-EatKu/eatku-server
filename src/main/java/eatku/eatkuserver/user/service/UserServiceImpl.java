@@ -15,6 +15,7 @@ import eatku.eatkuserver.user.repository.UserRepository;
 import eatku.eatkuserver.user.security.JwtProvider;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService{
     private final RedisUtil redisUtil;
 
     @Override
+    @Transactional
     public LoginResponseDto login(LoginRequestDto request) {
 
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
@@ -54,6 +56,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public String mailSend(EmailSendRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
@@ -77,6 +80,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public EmailAuthResponseDto mailAuth(EmailAuthRequestDto request) {
         String email = request.getEmail();
         String authNumber = request.getAuthNumber();
@@ -95,6 +99,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override   // 비밀번호 유효성 검사 해야함
+    @Transactional
     public String join(RegisterRequestDto request) {
         if(redisUtil.getData(request.getAuthNumber()).equals(request.getEmail())){
             User newUser = new User();
@@ -116,6 +121,28 @@ public class UserServiceImpl implements UserService{
         }else{
             throw new EntityNotFoundException(ErrorCode.MAIL_AUTH_FAILED, "인증번호가 일치하지 않습니다.");
         }
+    }
+
+    @Override
+    @Transactional
+    public String emailDuplicateCheck(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if(user != null){
+            throw new EntityNotFoundException(ErrorCode.ALREADY_EXIST_EMAIL, "이미 가입된 이메일입니다.");
+        }
+        return "사용 가능한 이메일입니다.";
+    }
+
+    @Override
+    @Transactional
+    public String nickNameDuplicateCheck(String nickName) {
+        User user = userRepository.findByNickName(nickName).orElse(null);
+
+        if(user != null){
+            throw new EntityNotFoundException(ErrorCode.ALREADY_EXIST_NICKNAME, "이미 사용중인 닉네임입니다.");
+        }
+        return "사용 가능한 닉네임입니다.";
     }
 
 //    public void joinTest(){

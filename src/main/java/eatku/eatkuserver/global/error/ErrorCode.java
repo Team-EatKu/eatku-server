@@ -10,7 +10,7 @@ public enum ErrorCode
     // User
     USER_NOT_FOUND(400, "U001", "유저가 존재하지 않습니다."),
     NOT_CORRECT_PASSWORD(400, "U002", "비밀번호가 틀렸습니다."),
-    ALREADY_EXIST_NAME(400, "U003", "이미 있는 이름입니다."),
+    ALREADY_EXIST_NICKNAME(400, "U003", "이미 사용 중인 닉네임입니다."),
     ALREADY_EXIST_EMAIL(400, "U004", "이미 있는 이메일입니다."),
     NOT_EQUAL_PASSWORD(400, "U005", "비밀번호가 일치하지 않습니다."),
     MAIL_AUTH_FAILED(400, "U006", "메일 인증에 실패하였습니다."),
@@ -22,20 +22,22 @@ public enum ErrorCode
     // Restaurant
     RESTAURANT_NOT_FOUND(400, "R001", "존재하지 않는 식당입니다."),
     IMAGE_UPLOAD_FAILED(400, "R002", "식당 사진 업로드에 실패하였습니다."),
+    RESTAURANT_SEARCH_FAILED(400, "R003", "식당 검색에 실패하였습니다."),
 
-    // Posts
-    POSTS_NOT_FOUND(400, "P002", "게시물을 찾을 수 없습니다."),
-    POSTS_CAN_NOT_DELETE(400, "P003", "게시물을 삭제할 수 없습니다."),
 
-    // Comment
-    CAN_NOT_REPLY_COMMENT(400, "C001", "답글을 등록할 수 없습니다."),
-    COMMENT_NOT_FOUND(400, "C002", "댓글(답글)이 존재하지 않습니다."),
-    CAN_NOT_DELETE_COMMENT(400, "C003", "댓글(답글)을 삭제할 수 없습니다."),
-    CAN_NOT_MODIFY_COMMENT(400, "C004", "댓글(답글)을 수정할 수 없습니다."),
+    // Review
+    REVIEW_NOT_FOUNT(400, "V001", "존재하지 않는 리뷰입니다."),
+    USER_REVIEW_NOT_MATCH(400, "V002", "리뷰 작성자와 일치하지 않습니다."),
+    ILLEGAR_REVIEW_SCOPE(400, "V003", "잘못된 리뷰 점수입니다."),
+    ILLEGAR_CONTENT_SIZE(400, "V004", "글자수 제한을 넘었습니다."),
 
     // Likes,
     CAN_NOT_LIKE_POSTS(400, "L001", "좋아요를 누를 수 없습니다."),
-    CAN_NOT_UNLIKE_POSTS(400, "L002", "좋아요를 취소할 수 없습니다.");
+    CAN_NOT_UNLIKE_POSTS(400, "L002", "좋아요를 취소할 수 없습니다."),
+
+    // 잘못된 API 요청
+    NOT_FOUNT_API(404, "X001", "잘못된 API 요청입니다."),
+    SERVER_ERROR(505, "S001", "서버 에러");
 
     private final int status;
     private final String code;

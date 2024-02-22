@@ -44,4 +44,16 @@ public class UserControllerImpl implements UserController {
         System.out.println("UserControllerImpl.register");
         return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_JOIN_SUCCESS, userService.join(request)));
     }
+
+    @Override
+    @GetMapping("/mail")
+    public ResponseEntity<ResultResponse> emailCheck(String email) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.EMAIL_CHECK_SUCCESS, userService.emailDuplicateCheck(email)));
+    }
+
+    @Override
+    @GetMapping("/nickname")
+    public ResponseEntity<ResultResponse> nickNameCheck(String nickName) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.NICKNAME_CHECK_SUCCESS, userService.nickNameDuplicateCheck(nickName)));
+    }
 }

@@ -46,16 +46,20 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/user/mailSend", "/user/login", "/user/mailAuth", "/user/register","/restaurant/register",  "/v2/api-docs",
+                        .requestMatchers("/user/**", "/restaurant/**",
+                                "/v2/api-docs",
                                 "/swagger-ui/**",
                                 "/api-docs/json/swagger-config",
                                 "/v3/**",
-                                "/api-docs/json").permitAll()
+                                "/api-docs/json"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) ->
+                        response.sendRedirect("/error"))
                 .accessDeniedHandler(this::accessDeniedHandler)
                 .authenticationEntryPoint(this::authenticationEntryPoint);
 
