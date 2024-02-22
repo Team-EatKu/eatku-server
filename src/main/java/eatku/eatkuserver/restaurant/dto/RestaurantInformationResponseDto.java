@@ -13,6 +13,7 @@ import java.util.List;
 public class RestaurantInformationResponseDto {
     private Long restaurantId;
     private String name;
+    private String location;
     private String address;
     private String phoneNumber;
     private Long likeCount;

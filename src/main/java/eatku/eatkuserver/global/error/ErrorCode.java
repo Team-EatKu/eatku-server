@@ -24,7 +24,7 @@ public enum ErrorCode
     RESTAURANT_NOT_FOUND(400, "R001", "존재하지 않는 식당입니다."),
     IMAGE_UPLOAD_FAILED(400, "R002", "식당 사진 업로드에 실패하였습니다."),
     RESTAURANT_SEARCH_FAILED(400, "R003", "식당 검색에 실패하였습니다."),
-
+    ILLEGER_SEARCH_PARAMETER(400, "R004", "식당 검색에 필요한 정보가 부족합니다."),
 
     // Review
     REVIEW_NOT_FOUNT(400, "V001", "존재하지 않는 리뷰입니다."),
@@ -38,7 +38,10 @@ public enum ErrorCode
 
     // 잘못된 API 요청
     NOT_FOUNT_API(404, "X001", "잘못된 API 요청입니다."),
-    SERVER_ERROR(505, "S001", "서버 에러");
+    SERVER_ERROR(505, "S001", "서버 에러"),
+
+    // location 조작 방지
+    NOT_FOUND_LOCATION(400, "O001", "잘못된 위치 입력입니다.");
 
     private final int status;
     private final String code;

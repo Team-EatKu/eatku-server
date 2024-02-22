@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService{
         return LoginResponseDto.builder()
                 .email(user.getEmail())
                 .nickName(user.getNickName())
+                .lectureBuilding(user.getLectureBuilding().getName())
                 .token(jwtProvider.createToken(user.getEmail(), user.getRoles()))
                 .build();
     }
@@ -92,6 +93,10 @@ public class UserServiceImpl implements UserService{
     public EmailAuthResponseDto mailAuth(EmailAuthRequestDto request) {
         String email = request.getEmail();
         String authNumber = request.getAuthNumber();
+
+        if(email == null || authNumber == null){
+            throw new EntityNotFoundException(ErrorCode.MAIL_AUTH_FAILED, "이메일이나 인증번호가 입력되지 않았습니다.");
+        }
 
         if(redisUtil.getData(authNumber).equals(email)){
             int newAuthNumber = makeRandomNumber();

@@ -4,19 +4,19 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
-@Getter
 @NoArgsConstructor
-public class LectureBuilding {
+@Getter
+public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LB_ID")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "LOCATION_ID")
-    private Location location;
-
     private String name;
+
+    @OneToMany(mappedBy = "location")
+    private List<LectureBuilding> lectureBuildingList;
 
 }

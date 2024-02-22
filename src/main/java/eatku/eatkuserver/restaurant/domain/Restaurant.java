@@ -49,7 +49,9 @@ public class Restaurant extends BaseTimeEntity{
 
     private String endTime;
 
-
+    @ManyToOne
+    @JoinColumn(name = "LOCATION_ID")
+    private Location location;
 
     @OneToMany(mappedBy = "restaurant", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Menu> menuList = new ArrayList<>();

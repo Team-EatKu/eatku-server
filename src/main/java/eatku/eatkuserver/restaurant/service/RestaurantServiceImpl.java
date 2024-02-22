@@ -6,6 +6,7 @@ import eatku.eatkuserver.restaurant.domain.*;
 import eatku.eatkuserver.restaurant.dto.*;
 import eatku.eatkuserver.restaurant.repository.CategoryRepository;
 import eatku.eatkuserver.restaurant.repository.HashTagRepository;
+import eatku.eatkuserver.restaurant.repository.LocationRepository;
 import eatku.eatkuserver.restaurant.repository.RestaurantRepository;
 import eatku.eatkuserver.review.domain.Review;
 import eatku.eatkuserver.review.dto.ReviewDto;
@@ -28,6 +29,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     private final CategoryRepository cr;
     private final HashTagRepository hr;
     private final S3Service s3Service;
+    private final LocationRepository lr;
 
     @Override
     @Transactional
@@ -35,6 +37,9 @@ public class RestaurantServiceImpl implements RestaurantService{
         Restaurant restaurant = new Restaurant();
 
         restaurant.setName(request.getName());
+        restaurant.setLocation(lr.findByName(request.getLocation()).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.NOT_FOUND_LOCATION, "잘못된 위치입니다.")
+        ));
         restaurant.setAddress(request.getAddress());
         restaurant.setPhoneNumber(request.getPhoneNumber());
         restaurant.setInformation(request.getInformation());
@@ -93,12 +98,16 @@ public class RestaurantServiceImpl implements RestaurantService{
     @Override
     @Transactional
     public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request) {
+        String restaurantName = request.getRestaurantName();
         List<String> hashtagQuery = request.getHashtagQuery();
         List<String> categoryQuery = request.getCategoryQuery();
+        List<String> locationQuery = request.getLocationQuery();
 
-        List<Restaurant> searchRestaurantList = rr.findByCategoriesAndHashtags(categoryQuery, hashtagQuery).orElseThrow(
-                () -> new EntityNotFoundException(ErrorCode.RESTAURANT_SEARCH_FAILED, "식당 검색 과정에 문제가 생겼습니다.")
-        );
+        if(hashtagQuery.isEmpty() || categoryQuery.isEmpty() || locationQuery.isEmpty()){
+            throw new EntityNotFoundException(ErrorCode.ILLEGER_SEARCH_PARAMETER, "검색에 필요한 정보가 부족합니다.");
+        }
+
+        List<Restaurant> searchRestaurantList = rr.findByHashtagsCategoriesLocationsAndName(restaurantName, categoryQuery, hashtagQuery, locationQuery);
 
         List<RestaurantDto> restaurantDtoList = searchRestaurantList.stream()
                 .map(RestaurantDto::from)

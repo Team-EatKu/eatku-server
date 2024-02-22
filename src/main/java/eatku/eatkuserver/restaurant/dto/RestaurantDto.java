@@ -13,6 +13,7 @@ public class RestaurantDto {
     private Long restaurantId;
     private String profileImage;
     private String name;
+    private String location;
     private List<String> hashtagList;
     private double averageScope;
 
@@ -21,6 +22,7 @@ public class RestaurantDto {
                 .restaurantId(restaurant.getId())
                 .profileImage(restaurant.getProfileImageUrl())
                 .name(restaurant.getName())
+                .location(restaurant.getLocation().getName())
                 .hashtagList(restaurant.getHashtagList().stream()
                         .map(restaurantHashtag -> {
                             return restaurantHashtag.getHashtag().getName();
