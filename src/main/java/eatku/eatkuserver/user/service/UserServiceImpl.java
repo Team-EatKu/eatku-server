@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService{
     @Override   // 비밀번호 유효성 검사, 닉네임 중복체크 추가해야함
     @Transactional
     public String join(RegisterRequestDto request) {
-        String nicknamePattern = "^[\\w!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{3,8}$";
+        String nicknamePattern = "^[\\w\\uAC00-\\uD7A3!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{3,8}$";
         String passwordPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,16}$";
 
         if(!Pattern.matches(nicknamePattern, request.getNickName())){
@@ -212,7 +212,7 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public String nickNameDuplicateCheck(String nickName) {
-        String nicknamePattern = "^[\\w!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{3,8}$";
+        String nicknamePattern = "^[\\w\\uAC00-\\uD7A3!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{3,8}$";;
 
         if(!Pattern.matches(nicknamePattern, nickName)){
             throw new EntityNotFoundException(ErrorCode.INVALID_NICKNAME, "닉네임이 유효하지 않습니다.");
