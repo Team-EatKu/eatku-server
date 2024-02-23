@@ -18,6 +18,7 @@ import eatku.eatkuserver.user.dto.emailauth.EmailSendRequestDto;
 import eatku.eatkuserver.user.dto.join.RegisterRequestDto;
 import eatku.eatkuserver.user.dto.login.LoginRequestDto;
 import eatku.eatkuserver.user.dto.login.LoginResponseDto;
+import eatku.eatkuserver.user.repository.LectureBuildingRepository;
 import eatku.eatkuserver.user.repository.UserRepository;
 import eatku.eatkuserver.user.security.JwtProvider;
 import jakarta.mail.MessagingException;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final LectureBuildingRepository lectureBuildingRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final JavaMailSender mailSender;
@@ -127,6 +129,10 @@ public class UserServiceImpl implements UserService{
             auth.setUserRole(UserRole.USER);
             authorityList.add(auth);
             newUser.setRoles(authorityList);
+
+            newUser.setLectureBuilding(lectureBuildingRepository.findByName(request.getLectureBuilding()).orElseThrow(
+                    () -> new EntityNotFoundException(ErrorCode.USER_REGISTER_FAILED, "강의동 정보가 상이합니다.")
+            ));
 
             newUser.setNickName(request.getNickName());
 

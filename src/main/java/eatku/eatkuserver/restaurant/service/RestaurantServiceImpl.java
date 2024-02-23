@@ -41,6 +41,9 @@ public class RestaurantServiceImpl implements RestaurantService{
                 () -> new EntityNotFoundException(ErrorCode.NOT_FOUND_LOCATION, "잘못된 위치입니다.")
         ));
         restaurant.setAddress(request.getAddress());
+        restaurant.setLocation(lr.findByName(request.getLocation()).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.NOT_FOUND_LOCATION, "강의동의 이름이 상이합니다.")
+        ));
         restaurant.setPhoneNumber(request.getPhoneNumber());
         restaurant.setInformation(request.getInformation());
         restaurant.setStartTime(request.getStartTime());

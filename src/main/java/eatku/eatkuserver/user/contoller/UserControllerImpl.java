@@ -47,13 +47,13 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping("/likes")
-    public ResponseEntity<ResultResponse> getLikeList(String token) {
+    public ResponseEntity<ResultResponse> getLikeList(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_LIKELIST_SUCCESS, userService.getUsersLikeList(token)));
     }
 
     @Override
     @GetMapping("/reviews")
-    public ResponseEntity<ResultResponse> getReviewList(String token) {
+    public ResponseEntity<ResultResponse> getReviewList(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_REVIEWLIST_SUCCESS, userService.getUsersReviewList(token)));
     }
 
