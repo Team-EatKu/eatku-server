@@ -15,6 +15,8 @@ public enum ErrorCode
     NOT_EQUAL_PASSWORD(400, "U005", "비밀번호가 일치하지 않습니다."),
     MAIL_AUTH_FAILED(400, "U006", "메일 인증에 실패하였습니다."),
     USER_REGISTER_FAILED(400, "U007", "회원가입에 실패하였습니다."),
+    INVALID_NICKNAME(400, "U008", "올바르지 않은 닉네임입니다."),
+    INVALID_PASSWORD(400, "U009", "올바르지 않은 비밀번호입니다."),
 
     // Authority
     AUTHENTICATION_FAILED(400, "A001", "인증되지 않은 사용자입니다."),
