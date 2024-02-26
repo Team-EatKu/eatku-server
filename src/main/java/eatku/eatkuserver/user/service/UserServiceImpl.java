@@ -224,7 +224,7 @@ public class UserServiceImpl implements UserService{
         return LikeListResponseDto.builder()
                 .restaurantList(user.getLikeList().stream()
                         .map(like -> {
-                            return RestaurantDto.from(like.getRestaurant());
+                            return RestaurantDto.from(like.getRestaurant(), true);
                         })
                         .collect(Collectors.toList()))
                 .build();
