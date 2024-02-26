@@ -4,7 +4,6 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.parameters.Parameter;
-import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -31,19 +30,5 @@ public class OpenApiConfig {
                                 .bearerFormat("JWT")));
     }
 
-    @Bean
-    public OpenApiCustomiser removeAuthorizationHeaderCustomizer() {
-        return openApi -> {
-            Paths paths = openApi.getPaths();
-            if (paths != null) {
-                paths.values().forEach(pathItem -> pathItem.readOperations().forEach(operation -> {
-                    if (operation.getParameters() != null) {
-                        operation.getParameters().removeIf(parameter ->
-                                parameter.getIn().equals("header") && "Authorization".equals(parameter.getName()));
-                    }
-                }));
-            }
-        };
-    }
 
 }
