@@ -23,6 +23,7 @@ public class RestaurantInformationResponseDto {
     private String information;
     private String startTime;
     private String endTime;
+    private boolean isLiked;
     private List<MenuDto> menuDtoList;
     private List<String> hashtagList;
     private List<String> categoryList;

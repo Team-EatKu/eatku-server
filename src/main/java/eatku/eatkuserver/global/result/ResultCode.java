@@ -18,6 +18,7 @@ public enum ResultCode {
     NICKNAME_CHECK_SUCCESS(200, "U010", "사용 가능한 닉네임입니다."),
     USER_LIKELIST_SUCCESS(200, "U011", "사용자의 찜하기 목록을 불러오는데 성공하였습니다."),
     USER_REVIEWLIST_SUCCESS(200, "U012", "사용자의 리뷰 목록을 불러오는데 성공하였습니다."),
+    USER_PROFILE_MODIFY_SUCCESS(200, "U013", "사용자의 프로필 사진 변경에 성공하였습니다."),
 
     // Restaurant
     RESTAURANT_REGISTER_SUCCESS(200, "R001", "식당 정보 등록에 성공하였습니다."),

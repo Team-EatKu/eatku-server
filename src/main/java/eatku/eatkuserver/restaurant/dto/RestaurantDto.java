@@ -16,8 +16,8 @@ public class RestaurantDto {
     private String location;
     private List<String> hashtagList;
     private double averageScope;
-
-    public static RestaurantDto from(Restaurant restaurant) {
+    private boolean isLiked;
+    public static RestaurantDto from(Restaurant restaurant, boolean isLiked) {
         return RestaurantDto.builder()
                 .restaurantId(restaurant.getId())
                 .profileImage(restaurant.getProfileImageUrl())
@@ -29,6 +29,7 @@ public class RestaurantDto {
                         })
                         .collect(Collectors.toList()))
                 .averageScope(restaurant.getAverageScope())
+                .isLiked(isLiked)
                 .build();
     }
 }

@@ -24,7 +24,7 @@ public enum ErrorCode
 
     // Restaurant
     RESTAURANT_NOT_FOUND(400, "R001", "존재하지 않는 식당입니다."),
-    IMAGE_UPLOAD_FAILED(400, "R002", "식당 사진 업로드에 실패하였습니다."),
+    IMAGE_UPLOAD_FAILED(400, "R002", "사진 업로드에 실패하였습니다."),
     RESTAURANT_SEARCH_FAILED(400, "R003", "식당 검색에 실패하였습니다."),
     ILLEGER_SEARCH_PARAMETER(400, "R004", "식당 검색에 필요한 정보가 부족합니다."),
 

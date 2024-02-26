@@ -4,12 +4,15 @@ import eatku.eatkuserver.global.error.exception.BusinessException;
 import eatku.eatkuserver.global.result.ResultResponse;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -33,5 +36,10 @@ public class GlobalExceptionHandler {
             }
         }
         return new ResponseEntity<>(ErrorResponse.of(ErrorCode.SERVER_ERROR, LocalDateTime.now()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public void handleNoHandlerFoundException(NoHandlerFoundException ex, HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, "The requested resource is not available.");
     }
 }

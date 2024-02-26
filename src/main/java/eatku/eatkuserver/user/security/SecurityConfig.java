@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/user/**", "/restaurant/**",
+                        .requestMatchers("/user/**", "/restaurant/**", "/error",
                                 "/v2/api-docs",
                                 "/swagger-ui/**",
                                 "/api-docs/json/swagger-config",
@@ -58,8 +58,6 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) ->
-                        response.sendRedirect("/error"))
                 .accessDeniedHandler(this::accessDeniedHandler)
                 .authenticationEntryPoint(this::authenticationEntryPoint);
 

@@ -6,6 +6,7 @@ import eatku.eatkuserver.restaurant.domain.LectureBuilding;
 import eatku.eatkuserver.restaurant.dto.RestaurantDto;
 import eatku.eatkuserver.review.domain.Review;
 import eatku.eatkuserver.review.dto.ReviewDto;
+import eatku.eatkuserver.s3.service.S3Service;
 import eatku.eatkuserver.user.domain.Authority;
 import eatku.eatkuserver.user.domain.User;
 import eatku.eatkuserver.user.domain.UserRole;
@@ -29,7 +30,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -46,6 +49,7 @@ public class UserServiceImpl implements UserService{
     private final JwtProvider jwtProvider;
     private final JavaMailSender mailSender;
     private final RedisUtil redisUtil;
+    private final S3Service s3Service;
 
     @Override
     @Transactional
@@ -164,8 +168,50 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public String modify(UserModifyRequestDto request, String token) {
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
 
-        return null;
+        if(request.getLectureBuilding() != null){
+            LectureBuilding lb = lectureBuildingRepository.findByName(request.getLectureBuilding()).orElseThrow(
+                    () -> new EntityNotFoundException(ErrorCode.NOT_FOUND_LOCATION, "존재하지 않는 강의동입니다.")
+            );
+
+            user.setLectureBuilding(lb);
+        }
+
+        if(request.getNickName() != null && nickNameRegexCheck(request.getNickName()) && nickNameDuplicateCheck(request.getNickName())){
+            user.setNickName(request.getNickName());
+        }
+
+        if(request.getPassword() != null){
+            String passwordPattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,16}$";
+
+            if(Pattern.matches(passwordPattern, request.getPassword())){
+                user.setPassword(request.getPassword());
+            }
+        }
+
+        return "수정 성공";
+    }
+
+    @Override
+    public String modifyProfileImage(String token, MultipartFile image) {
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
+
+        String newProfileImageUrl;
+
+        try {
+            newProfileImageUrl = s3Service.saveFile(image, "user_profile_image");
+        } catch (IOException e) {
+            throw new EntityNotFoundException(ErrorCode.IMAGE_UPLOAD_FAILED, "유저 프로필 사진 업데이트에 실패하였습니다.");
+        }
+
+        user.setProfileImageUrl(newProfileImageUrl);
+
+        return newProfileImageUrl;
     }
 
     @Override
@@ -211,19 +257,27 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public String nickNameDuplicateCheck(String nickName) {
-        String nicknamePattern = "^[\\w\\uAC00-\\uD7A3!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{3,8}$";;
-
-        if(!Pattern.matches(nicknamePattern, nickName)){
-            throw new EntityNotFoundException(ErrorCode.INVALID_NICKNAME, "닉네임이 유효하지 않습니다.");
+    public String nickNameValidationCheck(String nickName) {
+        if(!nickNameRegexCheck(nickName)){
+            throw new EntityNotFoundException(ErrorCode.INVALID_NICKNAME, "유효하지 않은 닉네임입니다.");
         }
 
-        User user = userRepository.findByNickName(nickName).orElse(null);
-
-        if(user != null){
+        if(!nickNameDuplicateCheck(nickName)){
             throw new EntityNotFoundException(ErrorCode.ALREADY_EXIST_NICKNAME, "이미 사용중인 닉네임입니다.");
         }
         return "사용 가능한 닉네임입니다.";
+    }
+
+    public boolean nickNameDuplicateCheck(String nickName){
+        User user = userRepository.findByNickName(nickName).orElse(null);
+
+        return user != null;
+    }
+
+    public boolean nickNameRegexCheck(String nickName){
+        String nicknamePattern = "^[\\w\\uAC00-\\uD7A3!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{3,8}$";
+
+        return Pattern.matches(nicknamePattern, nickName);
     }
 
 //    public void joinTest(){

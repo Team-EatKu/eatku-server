@@ -20,14 +20,14 @@ public class RestaurantControllerImpl implements RestaurantController{
 
     @Override
     @GetMapping("/{restaurantId}")
-    public ResponseEntity<ResultResponse> restaurantInformation(@PathVariable Long restaurantId) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_INFORMATION_SUCCESS, restaurantService.getRestaurantInformation(restaurantId)));
+    public ResponseEntity<ResultResponse> restaurantInformation(@PathVariable Long restaurantId, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_INFORMATION_SUCCESS, restaurantService.getRestaurantInformation(restaurantId, token)));
     }
 
     @Override
     @GetMapping("/search")
-    public ResponseEntity<ResultResponse> searchRestaurants(@RequestBody RestaurantSearchRequestDto request) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_SEARCH_SUCCESS, restaurantService.searchRestaurants(request)));
+    public ResponseEntity<ResultResponse> searchRestaurants(@RequestParam RestaurantSearchRequestDto request, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_SEARCH_SUCCESS, restaurantService.searchRestaurants(request, token)));
     }
 
     @Override

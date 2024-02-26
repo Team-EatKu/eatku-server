@@ -10,6 +10,7 @@ import eatku.eatkuserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,14 +26,14 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    @PostMapping("/mailSend")
+    @PostMapping("/mail-send")
     public ResponseEntity<ResultResponse> requestedMailSend(@RequestBody EmailSendRequestDto request) {
         System.out.println("UserControllerImpl.requestedMailSend");
         return ResponseEntity.ok(ResultResponse.of(ResultCode.EMAIL_SEND_SUCCESS, userService.mailSend(request)));
     }
 
     @Override
-    @PostMapping("/mailAuth")
+    @PostMapping("/mail-auth")
     public ResponseEntity<ResultResponse> requestedMailAuth(@RequestBody EmailAuthRequestDto request) {
         System.out.println("UserControllerImpl.requestedMailAuth");
         return ResponseEntity.ok(ResultResponse.of(ResultCode.EMAIL_AUTH_SUCCESS, userService.mailAuth(request)));
@@ -43,6 +44,12 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<ResultResponse> register(@RequestBody RegisterRequestDto request) {
         System.out.println("UserControllerImpl.register");
         return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_JOIN_SUCCESS, userService.join(request)));
+    }
+
+    @Override
+    @PostMapping("/profile-img")
+    public ResponseEntity<ResultResponse> modifyProfileImage(@RequestHeader("Authorization") String token, @RequestPart("image") MultipartFile image) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.USER_PROFILE_MODIFY_SUCCESS, userService.modifyProfileImage(token, image)));
     }
 
     @Override
@@ -58,14 +65,14 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    @GetMapping("/mail")
-    public ResponseEntity<ResultResponse> emailCheck(String email) {
+    @GetMapping("/mail/{email}")
+    public ResponseEntity<ResultResponse> emailCheck(@PathVariable String email) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.EMAIL_CHECK_SUCCESS, userService.emailDuplicateCheck(email)));
     }
 
     @Override
-    @GetMapping("/nickname")
-    public ResponseEntity<ResultResponse> nickNameCheck(String nickName) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.NICKNAME_CHECK_SUCCESS, userService.nickNameDuplicateCheck(nickName)));
+    @GetMapping("/nickname/{nickName}")
+    public ResponseEntity<ResultResponse> nickNameCheck(@PathVariable String nickName) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.NICKNAME_CHECK_SUCCESS, userService.nickNameValidationCheck(nickName)));
     }
 }

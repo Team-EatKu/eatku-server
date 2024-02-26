@@ -9,6 +9,7 @@ import eatku.eatkuserver.user.dto.emailauth.EmailSendRequestDto;
 import eatku.eatkuserver.user.dto.join.RegisterRequestDto;
 import eatku.eatkuserver.user.dto.login.LoginRequestDto;
 import eatku.eatkuserver.user.dto.login.LoginResponseDto;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     public LoginResponseDto login(LoginRequestDto request);
@@ -24,5 +25,7 @@ public interface UserService {
 
     public String emailDuplicateCheck(String email);
 
-    public String nickNameDuplicateCheck(String nickName);
+    public String nickNameValidationCheck(String nickName);
+
+    public String modifyProfileImage(String token, MultipartFile image);
 }

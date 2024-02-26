@@ -11,7 +11,10 @@ import eatku.eatkuserver.restaurant.repository.RestaurantRepository;
 import eatku.eatkuserver.review.domain.Review;
 import eatku.eatkuserver.review.dto.ReviewDto;
 import eatku.eatkuserver.s3.service.S3Service;
+import eatku.eatkuserver.user.domain.User;
 import eatku.eatkuserver.user.dto.UserDto;
+import eatku.eatkuserver.user.repository.UserRepository;
+import eatku.eatkuserver.user.security.JwtProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,8 @@ public class RestaurantServiceImpl implements RestaurantService{
     private final HashTagRepository hr;
     private final S3Service s3Service;
     private final LocationRepository lr;
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
     @Override
     @Transactional
@@ -100,7 +105,7 @@ public class RestaurantServiceImpl implements RestaurantService{
 
     @Override
     @Transactional
-    public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request) {
+    public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request, String token) {
         String restaurantName = request.getRestaurantName();
         List<String> hashtagQuery = request.getHashtagQuery();
         List<String> categoryQuery = request.getCategoryQuery();
@@ -112,8 +117,22 @@ public class RestaurantServiceImpl implements RestaurantService{
 
         List<Restaurant> searchRestaurantList = rr.findByHashtagsCategoriesLocationsAndName(restaurantName, categoryQuery, hashtagQuery, locationQuery);
 
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
+
+        List<Restaurant> restaurantList = user.getLikeList().stream()
+                .map(like -> {
+                    return like.getRestaurant();
+                }).collect(Collectors.toList());
+
         List<RestaurantDto> restaurantDtoList = searchRestaurantList.stream()
-                .map(RestaurantDto::from)
+                .map(restaurant -> {
+
+                    boolean isLiked = restaurantList.contains(restaurant);
+
+                    return RestaurantDto.from(restaurant, isLiked);
+                })
                 .collect(Collectors.toList());
 
         return RestaurantSearchResponseDto.builder()
@@ -122,7 +141,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     }
 
     @Override
-    public RestaurantInformationResponseDto getRestaurantInformation(Long restaurantId) {
+    public RestaurantInformationResponseDto getRestaurantInformation(Long restaurantId, String token) {
         Restaurant restaurant = rr.findRestaurantById(restaurantId).orElseThrow(
                 () -> new EntityNotFoundException(ErrorCode.RESTAURANT_NOT_FOUND, restaurantId + " : 해당 id의 식당이 존재하지 않습니다.")
         );
@@ -138,6 +157,18 @@ public class RestaurantServiceImpl implements RestaurantService{
             averageScope = (double) totalScope / restaurant.getReiviewList().size();
         }
 
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
+
+
+        List<Restaurant> restaurantList = user.getLikeList().stream()
+                .map(like -> {
+                    return like.getRestaurant();
+                }).collect(Collectors.toList());
+
+        boolean isLiked = restaurantList.contains(restaurant);
+
         return RestaurantInformationResponseDto.builder()
                 .restaurantId(restaurantId)
                 .name(restaurant.getName())
@@ -150,6 +181,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .information(restaurant.getInformation())
                 .startTime(restaurant.getStartTime())
                 .endTime(restaurant.getEndTime())
+                .isLiked(isLiked)
                 .menuDtoList(restaurant.getMenuList().stream()
                         .map(menu -> {
                             return MenuDto.builder()
