@@ -136,6 +136,13 @@ public class UserServiceImpl implements UserService{
                 request.getNickName() == null || request.getLectureBuilding() == null){
             throw new EntityNotFoundException(ErrorCode.USER_REGISTER_FAILED, "값이 부족합니다.");
         }
+
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+
+        if(user != null){
+            throw new EntityNotFoundException(ErrorCode.ALREADY_EXIST_EMAIL, "이미 등록된 이메일입니다.");
+        }
+
         if(redisUtil.getData(request.getAuthNumber()).equals(request.getEmail())){
             User newUser = new User();
             newUser.setEmail(request.getEmail());
@@ -143,6 +150,7 @@ public class UserServiceImpl implements UserService{
             List<Authority> authorityList = new ArrayList<>();
             Authority auth = new Authority();
             auth.setUserRole(UserRole.USER);
+            auth.setUser(newUser);
             authorityList.add(auth);
             newUser.setRoles(authorityList);
 
@@ -157,6 +165,7 @@ public class UserServiceImpl implements UserService{
             newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 
             userRepository.save(newUser);
+
 
             redisUtil.deleteData(request.getAuthNumber());
 

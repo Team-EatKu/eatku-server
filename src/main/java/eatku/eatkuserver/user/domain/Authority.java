@@ -17,7 +17,7 @@ public class Authority {
     @Convert(converter = UserRoleAttributeConverter.class)
     private UserRole userRole;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     @JsonIgnore
     private User user;
