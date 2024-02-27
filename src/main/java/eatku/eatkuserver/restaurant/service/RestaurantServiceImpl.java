@@ -17,6 +17,8 @@ import eatku.eatkuserver.user.repository.UserRepository;
 import eatku.eatkuserver.user.security.JwtProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,17 +107,14 @@ public class RestaurantServiceImpl implements RestaurantService{
 
     @Override
     @Transactional
-    public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request, String token) {
+    public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request, String token, Pageable pageable) {
         String restaurantName = request.getRestaurantName();
         List<String> hashtagQuery = request.getHashtagQuery();
         List<String> categoryQuery = request.getCategoryQuery();
         List<String> locationQuery = request.getLocationQuery();
 
-        if(hashtagQuery.isEmpty() || categoryQuery.isEmpty() || locationQuery.isEmpty()){
-            throw new EntityNotFoundException(ErrorCode.ILLEGER_SEARCH_PARAMETER, "검색에 필요한 정보가 부족합니다.");
-        }
 
-        List<Restaurant> searchRestaurantList = rr.findByHashtagsCategoriesLocationsAndName(restaurantName, categoryQuery, hashtagQuery, locationQuery);
+        Page<Restaurant> searchRestaurantList = rr.findByHashtagsCategoriesLocationsAndName(restaurantName, categoryQuery, hashtagQuery, locationQuery, pageable);
 
         User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
                 () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
@@ -126,14 +125,13 @@ public class RestaurantServiceImpl implements RestaurantService{
                     return like.getRestaurant();
                 }).collect(Collectors.toList());
 
-        List<RestaurantDto> restaurantDtoList = searchRestaurantList.stream()
+        Page<RestaurantDto> restaurantDtoList = searchRestaurantList
                 .map(restaurant -> {
 
                     boolean isLiked = restaurantList.contains(restaurant);
 
                     return RestaurantDto.from(restaurant, isLiked);
-                })
-                .collect(Collectors.toList());
+                });
 
         return RestaurantSearchResponseDto.builder()
                 .restaurantData(restaurantDtoList)

@@ -6,6 +6,8 @@ import eatku.eatkuserver.restaurant.dto.RestaurantRegisterRequestDto;
 import eatku.eatkuserver.restaurant.dto.RestaurantSearchRequestDto;
 import eatku.eatkuserver.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +30,8 @@ public class RestaurantControllerImpl implements RestaurantController{
 
     @Override
     @GetMapping("/search")
-    public ResponseEntity<ResultResponse> searchRestaurants(@RequestParam RestaurantSearchRequestDto request, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_SEARCH_SUCCESS, restaurantService.searchRestaurants(request, token)));
+    public ResponseEntity<ResultResponse> searchRestaurants(@ModelAttribute RestaurantSearchRequestDto request, @RequestHeader("Authorization") String token, @PageableDefault(size = 20, sort = "name") Pageable pageable) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_SEARCH_SUCCESS, restaurantService.searchRestaurants(request, token, pageable)));
     }
 
     @Override
