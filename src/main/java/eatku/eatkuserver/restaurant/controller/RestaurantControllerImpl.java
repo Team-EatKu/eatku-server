@@ -5,7 +5,11 @@ import eatku.eatkuserver.global.result.ResultResponse;
 import eatku.eatkuserver.restaurant.dto.RestaurantRegisterRequestDto;
 import eatku.eatkuserver.restaurant.dto.RestaurantSearchRequestDto;
 import eatku.eatkuserver.restaurant.service.RestaurantService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +28,14 @@ public class RestaurantControllerImpl implements RestaurantController{
 
     @Override
     @GetMapping("/{restaurantId}")
-    public ResponseEntity<ResultResponse> restaurantInformation(@PathVariable Long restaurantId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResultResponse> restaurantInformation(@Parameter(description = "asdfasdf") Long restaurantId, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_INFORMATION_SUCCESS, restaurantService.getRestaurantInformation(restaurantId, token)));
     }
 
     @Override
+    @Operation(summary = "get search restaurant data", description = "[@Operation] get search api", security = {})
     @GetMapping("/search")
-    public ResponseEntity<ResultResponse> searchRestaurants(@ModelAttribute RestaurantSearchRequestDto request, @RequestHeader("Authorization") String token, @PageableDefault(size = 20, sort = "name") Pageable pageable) {
+    public ResponseEntity<ResultResponse> searchRestaurants(@ParameterObject RestaurantSearchRequestDto request, @Parameter(hidden = true) @RequestHeader("Authorization") String token, @PageableDefault(size = 20, sort = "name") Pageable pageable) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_SEARCH_SUCCESS, restaurantService.searchRestaurants(request, token, pageable)));
     }
 
