@@ -6,5 +6,5 @@ import java.util.List;
 
 @Builder
 public class RestaurantRecommendResponseDto {
-    private List<List<RestaurantDto>> restaurantData;
+    private List<RestaurantListDto> restaurantData;
 }

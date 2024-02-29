@@ -278,7 +278,7 @@ public class UserServiceImpl implements UserService{
     public boolean nickNameDuplicateCheck(String nickName){
         User user = userRepository.findByNickName(nickName).orElse(null);
 
-        return user != null;
+        return user == null;
     }
 
     public boolean nickNameRegexCheck(String nickName){

@@ -7,6 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface RestaurantService {
+    public RestaurantRecommendResponseDto recommendRestaurant(String token);
+
     public String addRestaurant(RestaurantRegisterRequestDto request, MultipartFile profileImage);
 
     public RestaurantSearchResponseDto searchRestaurants(RestaurantSearchRequestDto request, String token, Pageable pageable);

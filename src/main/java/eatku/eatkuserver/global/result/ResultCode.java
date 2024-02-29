@@ -24,6 +24,7 @@ public enum ResultCode {
     RESTAURANT_REGISTER_SUCCESS(200, "R001", "식당 정보 등록에 성공하였습니다."),
     RESTAURANT_SEARCH_SUCCESS(200, "R002", "식당 검색에 성공하였습니다."),
     RESTAURANT_INFORMATION_SUCCESS(200, "R003", "식당 조회에 성공하였습니다."),
+    RESTAURANT_RECOMMEND_SUCCESS(200, "R004", "식당 추천에 성공하였습니다."),
 
     // Review
     REVIEW_REGISTER_SUCCESS(200, "V001", "리뷰 등록에 성공하였습니다."),

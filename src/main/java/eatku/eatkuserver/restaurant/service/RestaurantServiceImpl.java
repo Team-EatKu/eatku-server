@@ -2,6 +2,7 @@ package eatku.eatkuserver.restaurant.service;
 
 import eatku.eatkuserver.global.error.ErrorCode;
 import eatku.eatkuserver.global.error.exception.EntityNotFoundException;
+import eatku.eatkuserver.like.domain.Like;
 import eatku.eatkuserver.restaurant.domain.*;
 import eatku.eatkuserver.restaurant.dto.*;
 import eatku.eatkuserver.restaurant.repository.CategoryRepository;
@@ -9,6 +10,7 @@ import eatku.eatkuserver.restaurant.repository.HashTagRepository;
 import eatku.eatkuserver.restaurant.repository.LocationRepository;
 import eatku.eatkuserver.restaurant.repository.RestaurantRepository;
 import eatku.eatkuserver.review.domain.Review;
+import eatku.eatkuserver.restaurant.dto.Recommendation;
 import eatku.eatkuserver.review.dto.ReviewDto;
 import eatku.eatkuserver.s3.service.S3Service;
 import eatku.eatkuserver.user.domain.User;
@@ -23,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +41,49 @@ public class RestaurantServiceImpl implements RestaurantService{
     private final LocationRepository lr;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+
+    @Override
+    @Transactional
+    public RestaurantRecommendResponseDto recommendRestaurant(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
+
+        // 유저의 강의동을 뽑아옴
+        LectureBuilding userLectureBuilding = user.getLectureBuilding();
+
+        // 유저의 찜한 레스토랑 리스트를 뽑아옴
+        List<Restaurant> userLikedRestaurantList = user.getLikeList().stream()
+                .map(Like::getRestaurant)
+                .toList();
+
+        // 랜덤으로 3개의 enum(Recommendation)을 가져옴
+        List<Recommendation> recommendations = makeRandomRecommendation();
+
+        // 레스토랑 리스트 dto로 변환
+        List<RestaurantListDto> restaurantListDtos = recommendations.stream()
+                .map(recommendation -> {
+                    String title = recommendation.getTitle();
+                    String hashtag = recommendation.getHashtag();
+
+                    List<RestaurantDto> restaurantDtoList = rr.findRestaurantsByHashtagNameAndLectureBuildingLimit7(hashtag, userLectureBuilding.getId()).stream()
+                            .map(restaurant -> {
+                                boolean isLiked = userLikedRestaurantList.contains(restaurant);
+                                return RestaurantDto.from(restaurant, isLiked);
+                            })
+                            .collect(Collectors.toList());
+
+                    return RestaurantListDto.builder()
+                            .title(title)
+                            .restaurantDtoList(restaurantDtoList)
+                            .build();
+                })
+                .toList();
+
+        return RestaurantRecommendResponseDto.builder()
+                .restaurantData(restaurantListDtos)
+                .build();
+    }
 
     @Override
     @Transactional
@@ -59,16 +106,21 @@ public class RestaurantServiceImpl implements RestaurantService{
         restaurant.setLongitude(request.getLongitude());
         restaurant.setMenuList(request.getMenuList().stream()
                 .map(menu -> {
-                    menu.setRestaurant(restaurant);
-                    return menu;
+                    Menu newMenu = new Menu();
+                    newMenu.setRestaurant(restaurant);
+                    newMenu.setName(menu.getName());
+                    newMenu.setPrice(menu.getPrice());
+                    return newMenu;
                 })
                 .collect(Collectors.toList()));
 
         restaurant.setCategoryList(request.getCategoryList().stream()
                 .map(category -> {
-                    Category findCg = cr.findCategoryByCategoryName(category.getCategoryName()).orElse(null);
+                    Category findCg = cr.findCategoryByCategoryName(category).orElse(null);
                     if(findCg == null){
-                        findCg = cr.save(category);
+                        Category newCategory = new Category();
+                        newCategory.setCategoryName(category);
+                        findCg = cr.save(newCategory);
                     }
                     RestaurantCategory rc = new RestaurantCategory();
                     rc.setRestaurant(restaurant);
@@ -79,9 +131,11 @@ public class RestaurantServiceImpl implements RestaurantService{
 
         restaurant.setHashtagList(request.getHashtagList().stream()
                 .map(hashtag -> {
-                    Hashtag findHashTag = hr.findHashtagByName(hashtag.getName()).orElse(null);
+                    Hashtag findHashTag = hr.findHashtagByName(hashtag).orElse(null);
                     if(findHashTag == null){
-                        findHashTag = hr.save(hashtag);
+                        Hashtag newHashtag = new Hashtag();
+                        newHashtag.setName(hashtag);
+                        findHashTag = hr.save(newHashtag);
                     }
                     RestaurantHashtag rh = new RestaurantHashtag();
                     rh.setRestaurant(restaurant);
@@ -215,5 +269,28 @@ public class RestaurantServiceImpl implements RestaurantService{
                         })
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    private List<Recommendation> makeRandomRecommendation() {
+        int count = 3;
+        List<Recommendation> recommendations = new ArrayList<>();
+        Random r = new Random();
+
+        for(int i = 0; i < count; i++){
+            int random = r.nextInt() % 5 + 1;
+            boolean flag = true;
+            for(Recommendation recommendation : recommendations){
+                if(recommendation.getCode() == random){
+                    i--;
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag){
+                recommendations.add(Recommendation.of(random));
+            }
+        }
+
+        return recommendations;
     }
 }

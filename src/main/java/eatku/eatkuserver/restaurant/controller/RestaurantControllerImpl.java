@@ -8,10 +8,13 @@ import eatku.eatkuserver.restaurant.service.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,14 +24,20 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurant")
-public class RestaurantControllerImpl implements RestaurantController{
+public class RestaurantControllerImpl implements RestaurantController {
 
     private final RestaurantService restaurantService;
 
 
     @Override
+    @GetMapping("")
+    public ResponseEntity<ResultResponse> recommendRestaurant(@Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_RECOMMEND_SUCCESS, restaurantService.recommendRestaurant(token)));
+    }
+
+    @Override
     @GetMapping("/{restaurantId}")
-    public ResponseEntity<ResultResponse> restaurantInformation(@Parameter(description = "asdfasdf") Long restaurantId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResultResponse> restaurantInformation(@Parameter(description = "restaurant id") Long restaurantId, @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_INFORMATION_SUCCESS, restaurantService.getRestaurantInformation(restaurantId, token)));
     }
 
@@ -40,11 +49,18 @@ public class RestaurantControllerImpl implements RestaurantController{
     }
 
     @Override
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerRestaurant(
-            @RequestPart(value = "restaurant_data") RestaurantRegisterRequestDto request,
+            @Parameter(description = "Restaurant registration data",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantRegisterRequestDto.class)))
+            @RequestPart("restaurant_data") RestaurantRegisterRequestDto request,
+
+            @Parameter(description = "Profile image file",
+                    content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
             @RequestPart(value = "image", required = false) MultipartFile profileImage) {
 
         return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_REGISTER_SUCCESS, restaurantService.addRestaurant(request, profileImage)));
+
     }
 }

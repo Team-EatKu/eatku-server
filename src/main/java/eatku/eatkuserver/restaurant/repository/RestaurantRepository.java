@@ -1,5 +1,6 @@
 package eatku.eatkuserver.restaurant.repository;
 
+import eatku.eatkuserver.restaurant.domain.LectureBuilding;
 import eatku.eatkuserver.restaurant.domain.Restaurant;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,9 @@ import java.util.Optional;
 
 @Transactional
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+
+    @Query(value = "SELECT * FROM restaurant WHERE id IN (SELECT restaurant_id FROM restaurant_hashtag WHERE hashtag_id IN (SELECT id FROM hashtag WHERE name = :hashtagName)) AND location_id IN (SELECT location_id FROM lecture_building WHERE id = :lectureBuildingId) LIMIT 7", nativeQuery = true)
+    List<Restaurant> findRestaurantsByHashtagNameAndLectureBuildingLimit7(@Param("hashtagName") String hashtagName, @Param("lectureBuildingId") Long lectureBuildingId);
     @Query("SELECT DISTINCT r FROM Restaurant r " +
             "LEFT JOIN r.hashtagList rh " +
             "LEFT JOIN r.categoryList rc " +
@@ -26,7 +30,5 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
                                                               @Param("categories") List<String> categories,
                                                               @Param("locations") List<String> locations,
                                                               Pageable pageable);
-
-
     Optional<Restaurant> findRestaurantById(Long id);
 }

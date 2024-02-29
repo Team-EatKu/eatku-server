@@ -21,7 +21,7 @@ public class RestaurantRegisterRequestDto {
     private String information;
     private String startTime;
     private String endTime;
-    private List<Menu> menuList;
-    private List<Category> categoryList;
-    private List<Hashtag> hashtagList;
+    private List<MenuDto> menuList;
+    private List<String> categoryList;
+    private List<String> hashtagList;
 }

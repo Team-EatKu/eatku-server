@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface RestaurantController {
+    public ResponseEntity<ResultResponse> recommendRestaurant(String token);
     public ResponseEntity<ResultResponse> restaurantInformation(Long restaurantId, String token);
     public ResponseEntity<ResultResponse> searchRestaurants(RestaurantSearchRequestDto request, String token, Pageable pageable);
     public ResponseEntity<ResultResponse> registerRestaurant(RestaurantRegisterRequestDto request, MultipartFile profileImage);
