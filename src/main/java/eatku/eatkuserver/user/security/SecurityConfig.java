@@ -69,7 +69,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://3.36.243.116:5173", "http://eatku.site", "http://localhost:8080"));
+        config.setAllowedOrigins(Arrays.asList("http://3.36.243.116:5173", "http://eatku.site", "http://localhost:5173"));
         config.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
 
