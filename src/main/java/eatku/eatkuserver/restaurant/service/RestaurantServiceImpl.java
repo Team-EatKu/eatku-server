@@ -145,7 +145,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .collect(Collectors.toList()));
 
         String profileImageUrl;
-        if(!profileImage.isEmpty()){
+        if(!(profileImage == null)){
             try{
                 profileImageUrl = s3Service.saveFile(profileImage, "restaurant_profile_image");
             } catch (IOException e) {

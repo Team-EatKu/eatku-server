@@ -46,7 +46,9 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/user/**", "/restaurant/**", "/error",
+                        .requestMatchers("/user/**",
+                                "/restaurant/**",
+                                "/error",
                                 "/v2/api-docs",
                                 "/swagger-ui/**",
                                 "/api-docs/json/swagger-config",

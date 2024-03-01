@@ -16,6 +16,7 @@ public interface UserController {
     public ResponseEntity<ResultResponse> requestedMailAuth(EmailAuthRequestDto request);
 
     public ResponseEntity<ResultResponse> register(RegisterRequestDto request);
+    public ResponseEntity<ResultResponse> getUserProfile(String token);
     public ResponseEntity<ResultResponse> modifyProfileImage(String token, MultipartFile image);
 
     public ResponseEntity<ResultResponse> getLikeList(String token);

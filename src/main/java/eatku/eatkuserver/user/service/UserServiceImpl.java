@@ -12,6 +12,7 @@ import eatku.eatkuserver.user.domain.User;
 import eatku.eatkuserver.user.domain.UserRole;
 import eatku.eatkuserver.user.dto.LikeListResponseDto;
 import eatku.eatkuserver.user.dto.ReviewListResponseDto;
+import eatku.eatkuserver.user.dto.UserInformationResponseDto;
 import eatku.eatkuserver.user.dto.UserModifyRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthResponseDto;
@@ -173,6 +174,20 @@ public class UserServiceImpl implements UserService{
         }else{
             throw new EntityNotFoundException(ErrorCode.MAIL_AUTH_FAILED, "인증번호가 일치하지 않습니다.");
         }
+    }
+
+    @Override
+    public UserInformationResponseDto getUserInformation(String token) {
+        User user = userRepository.findByEmail(jwtProvider.getAccount(token)).orElseThrow(
+                () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "잘못된 접근입니다.")
+        );
+
+        return UserInformationResponseDto.builder()
+                .nickName(user.getNickName())
+                .email(user.getEmail())
+                .lectureBuilding(user.getLectureBuilding().getName())
+                .profileImage(user.getProfileImageUrl())
+                .build();
     }
 
     @Override

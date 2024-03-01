@@ -30,25 +30,28 @@ public class RestaurantControllerImpl implements RestaurantController {
 
 
     @Override
+    @Operation(summary = "get main recommended restaurant data", description = "[@Operation] restaurant recommend api")
     @GetMapping("")
     public ResponseEntity<ResultResponse> recommendRestaurant(@Parameter(hidden = true) @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_RECOMMEND_SUCCESS, restaurantService.recommendRestaurant(token)));
     }
 
     @Override
+    @Operation(summary = "get specific restaurant information", description = "[@Operation] get specific restaurant information api")
     @GetMapping("/{restaurantId}")
     public ResponseEntity<ResultResponse> restaurantInformation(@Parameter(description = "restaurant id") Long restaurantId, @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_INFORMATION_SUCCESS, restaurantService.getRestaurantInformation(restaurantId, token)));
     }
 
     @Override
-    @Operation(summary = "get search restaurant data", description = "[@Operation] get search api", security = {})
+    @Operation(summary = "get search restaurant data", description = "[@Operation] get search api")
     @GetMapping("/search")
     public ResponseEntity<ResultResponse> searchRestaurants(@ParameterObject RestaurantSearchRequestDto request, @Parameter(hidden = true) @RequestHeader("Authorization") String token, @PageableDefault(size = 20, sort = "name") Pageable pageable) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.RESTAURANT_SEARCH_SUCCESS, restaurantService.searchRestaurants(request, token, pageable)));
     }
 
     @Override
+    @Operation(summary = "register restaurant data", description = "[@Operation] restaurant register api")
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultResponse> registerRestaurant(
             @Parameter(description = "Restaurant registration data",

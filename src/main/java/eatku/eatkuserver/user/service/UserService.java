@@ -2,6 +2,7 @@ package eatku.eatkuserver.user.service;
 
 import eatku.eatkuserver.user.dto.LikeListResponseDto;
 import eatku.eatkuserver.user.dto.ReviewListResponseDto;
+import eatku.eatkuserver.user.dto.UserInformationResponseDto;
 import eatku.eatkuserver.user.dto.UserModifyRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthRequestDto;
 import eatku.eatkuserver.user.dto.emailauth.EmailAuthResponseDto;
@@ -16,6 +17,8 @@ public interface UserService {
     public String mailSend(EmailSendRequestDto request);
     public EmailAuthResponseDto mailAuth(EmailAuthRequestDto request);
     public String join(RegisterRequestDto request);
+
+    public UserInformationResponseDto getUserInformation(String token);
 
     public String modify(UserModifyRequestDto request, String token);
 
