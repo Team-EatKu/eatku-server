@@ -107,7 +107,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public String deleteReview(ReviewModifyRequestDto request, String token) {
+    public String deleteReview(Long reviewId, String token) {
 
         String userEmail = jwtProvider.getAccount(token);
 
@@ -115,7 +115,7 @@ public class ReviewServiceImpl implements ReviewService {
                 () -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND, "올바르지 않은 접근입니다.")
         );
 
-        Review review = reviewRepository.findById(request.getReviewId()).orElseThrow(
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new EntityNotFoundException(ErrorCode.REVIEW_NOT_FOUNT, "존재하지 않는 리뷰입니다.")
         );
 

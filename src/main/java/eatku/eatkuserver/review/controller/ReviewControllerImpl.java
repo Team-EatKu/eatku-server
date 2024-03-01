@@ -52,8 +52,8 @@ public class ReviewControllerImpl implements ReviewController{
 
     @Override
     @Operation(summary = "delete user's restaurant review", description = "[@Operation] review delete api")
-    @DeleteMapping()
-    public ResponseEntity<ResultResponse> deleteReview(@RequestBody ReviewModifyRequestDto request, @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok(ResultResponse.of(ResultCode.REVIEW_DELETE_SUCCESS, reviewService.deleteReview(request, token)));
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<ResultResponse> deleteReview(@PathVariable Long reviewId, @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok(ResultResponse.of(ResultCode.REVIEW_DELETE_SUCCESS, reviewService.deleteReview(reviewId, token)));
     }
 }

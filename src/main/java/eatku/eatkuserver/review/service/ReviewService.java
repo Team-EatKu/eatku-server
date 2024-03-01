@@ -11,5 +11,5 @@ public interface ReviewService {
 
     public String modifyReview(ReviewModifyRequestDto request, String token);
 
-    public String deleteReview(ReviewModifyRequestDto request, String token);
+    public String deleteReview(Long reviewId, String token);
 }

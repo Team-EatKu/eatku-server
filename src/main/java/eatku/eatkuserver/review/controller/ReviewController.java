@@ -11,6 +11,6 @@ import java.util.List;
 public interface ReviewController {
     public ResponseEntity<ResultResponse> registerReview(ReviewRegisterRequestDto request, List<MultipartFile> images, String token);
     public ResponseEntity<ResultResponse> modifyReview(ReviewModifyRequestDto request, String token);
-    public ResponseEntity<ResultResponse> deleteReview(ReviewModifyRequestDto request, String token);
+    public ResponseEntity<ResultResponse> deleteReview(Long reviewId, String token);
 
 }
