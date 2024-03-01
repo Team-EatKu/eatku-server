@@ -33,11 +33,11 @@ public class ReviewControllerImpl implements ReviewController{
             @Parameter(description = "review registration data",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ReviewRegisterRequestDto.class)))
-            @RequestPart ReviewRegisterRequestDto request,
+            @RequestPart("review_register_data") ReviewRegisterRequestDto request,
 
             @Parameter(description = "Review images",
             content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
-            @RequestPart List<MultipartFile> images,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
 
             @Parameter(hidden = true) @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(ResultResponse.of(ResultCode.REVIEW_REGISTER_SUCCESS, reviewService.addReview(request, token, images)));

@@ -53,7 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setContent(request.getContent());
         review.setRestaurant(restaurant);
 
-        if(!images.isEmpty()){
+        if(!(images == null)){
             review.setImageUrls(images.stream()
                     .map(image -> {
                         String imageUrl;
